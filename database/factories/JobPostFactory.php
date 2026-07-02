@@ -2,23 +2,25 @@
 
 namespace Database\Factories;
 
-use App\Models\JobPost;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<JobPost>
- */
 class JobPostFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
+     
+        $salary_min = $this->faker->numberBetween(10, 20) * 1000000; 
+
         return [
-            //
+            'title' => $this->faker->jobTitle(),
+            'department' => $this->faker->randomElement(['IT', 'HR', 'Marketing', 'Sales']),
+            
+            'salary_min' => $salary_min,
+            'salary_max' => $salary_min + $this->faker->numberBetween(5, 15) * 1000000, 
+            
+            'deadline' => $this->faker->dateTimeBetween('-1 month', '+2 months')->format('Y-m-d'),
+            
+            'status' => $this->faker->randomElement(['active', 'closed', 'draft']),
         ];
     }
 }
