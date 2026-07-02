@@ -13,6 +13,21 @@
         .btn-danger { background: #dc3545; color: white; border: none; }
         .alert-success { background: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
         .text-danger { color: red; font-weight: bold; font-size: 14px; }
+        .pagination svg {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+.pagination nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+.pagination div > span:first-child {
+    display: none; 
+}
     </style>
 </head>
 <body>
