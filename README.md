@@ -1,4 +1,4 @@
-![Uploading Screenshot 2026-07-02 170158.png…]()
+
 # Hệ thống Quản lý Tuyển dụng - Module Job Posts
 
 Dự án này là bài tập thực tập sinh xây dựng chức năng **Quản lý Tin tuyển dụng (Job Posts)** sử dụng framework Laravel 12.
