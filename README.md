@@ -1,27 +1,14 @@
-# Hệ thống Quản lý Tuyển dụng - Module Job Posts
-
-Dự án này là bài tập thực tập sinh xây dựng chức năng **Quản lý Tin tuyển dụng (Job Posts)** sử dụng framework Laravel 12.
+# Hệ thống Quản lý Tuyển dụng - Job Posts
 
 ##  Người thực hiện
 - **Thực tập sinh:** Dũng
 - **Vai trò:** Xây dựng CRUD, Validation, Filter và Pagination cho module Job Posts.
 
-##  Hình ảnh minh họa (Screenshots)
-
-**1. Giao diện Danh sách & Lọc (Pagination, Filter & Báo Hết Hạn):**
-![Giao diện danh sách]
-
-**2. Giao diện Thêm mới & Hiển thị lỗi Validation:**
-![Giao diện thêm mới]
-
-**3. Giao diện Xem chi tiết:**
-![Giao diện chi tiết]
-
 ---
 
 ## 🔗 Danh sách Tuyến đường (Routes / API Endpoints) để Test
 
-Toàn bộ hệ thống được xây dựng chuẩn RESTful qua `Route::resource`. Dưới đây là bảng thiết kế các endpoint để leader có thể test luồng dữ liệu:
+Toàn bộ hệ thống được xây dựng chuẩn RESTful qua `Route::resource`. Dưới đây là bảng thiết kế các endpoint để test luồng dữ liệu:
 
 | HTTP Method | Endpoint (URL) | Chức năng | Dữ liệu truyền vào (Params/Body) |
 | :--- | :--- | :--- | :--- |
@@ -33,7 +20,7 @@ Toàn bộ hệ thống được xây dựng chuẩn RESTful qua `Route::resourc
 | **PUT** | `/job-posts/{id}` | Xử lý cập nhật tin | Giống phương thức POST |
 | **DELETE** | `/job-posts/{id}` | Xử lý xóa tin | ID của bản ghi trên URL |
 
-> **Ghi chú kỹ thuật:** Vì đây là ứng dụng Web sử dụng Blade (không phải API thuần), các route POST, PUT, DELETE đều được bảo vệ bởi lớp bảo mật CSRF Token của Laravel. Quá trình test mượt mà nhất là thao tác trực tiếp trên giao diện trình duyệt đã được cung cấp sẵn.
+> **Ghi chú:** Các route POST, PUT, DELETE đều được bảo vệ bởi CSRF Token của Laravel. Quá trình test mượt mà nhất là thao tác trực tiếp trên giao diện trình duyệt.
 
 ---
 
@@ -47,10 +34,44 @@ Toàn bộ hệ thống được xây dựng chuẩn RESTful qua `Route::resourc
 - [x] Lọc dữ liệu theo "Trạng thái" và "Phòng ban".
 - [x] Tự động hiển thị nhãn **(Hết hạn)** nếu deadline nhỏ hơn ngày hiện tại.
 
-##  Hướng dẫn cài đặt và chạy thử
+---
 
-Để khởi chạy dự án này trên máy cục bộ, vui lòng thực hiện:
+##  Hướng dẫn cài đặt và chạy thử (Tối ưu cho Laragon)
 
-1. Clone kho lưu trữ về máy:
+Cách tiện lợi và chuyên nghiệp nhất để test dự án này là sử dụng tính năng **Virtual Host** của môi trường Laragon.
+
+**Quy trình thực hiện:**
+
+1. Mở Terminal của Laragon, di chuyển vào thư mục `www`:
    ```bash
-   git clone <đường-link-github-của-bạn>
+   cd C:\laragon\www
+Clone dự án về máy (đảm bảo đúng tên thư mục RecruitmentSystem):
+
+Bash
+git clone https://github.com/DungHoang0411/RecruitmentSystem.git RecruitmentSystem
+Di chuyển vào thư mục dự án và cài đặt các thư viện PHP:
+
+Bash
+cd RecruitmentSystem
+composer install
+Copy file cấu hình và tạo Application Key:
+
+Bash
+copy .env.example .env
+php artisan key:generate
+Cấu hình Database:
+
+Mở giao diện quản lý Database của Laragon (HeidiSQL/phpMyAdmin).
+
+Tạo một database rỗng với tên là: recruitment_system.
+
+Chạy lệnh tạo bảng và gieo 20 bản ghi mẫu:
+
+Bash
+php artisan migrate --seed
+Khởi động lại Apache/Nginx trên Laragon (Bấm nút Stop rồi Start lại) để hệ thống nhận diện Virtual Host.
+
+Test dự án: Không cần phải chạy lệnh php artisan serve. Có thể truy cập trực tiếp hệ thống thông qua tên miền ảo nội bộ:
+ http://recruitmentsystem.test/job-posts
+
+(Trường hợp không sử dụng Laragon, vui lòng chạy lệnh php artisan serve và truy cập http://127.0.0.1:8000/job-posts)
