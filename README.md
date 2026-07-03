@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 # Hệ thống Quản lý Tuyển dụng - Job Posts
+=======
+
+# Hệ thống Quản lý Tuyển dụng - Module Job Posts
+
+Dự án này là bài tập thực tập sinh xây dựng chức năng **Quản lý Tin tuyển dụng (Job Posts)** sử dụng framework Laravel 12.
+>>>>>>> aaeb8b47b865a2ef6431cd162498840c0c3858e6
 
 ##  Người thực hiện
 - **Thực tập sinh:** Dũng
@@ -44,6 +51,7 @@ Cách tiện lợi và chuyên nghiệp nhất để test dự án này là sử
 
 1. Mở Terminal của Laragon, di chuyển vào thư mục `www`:
    ```bash
+<<<<<<< HEAD
    cd C:\laragon\www
 Clone dự án về máy (đảm bảo đúng tên thư mục RecruitmentSystem):
 
@@ -75,3 +83,6 @@ Test dự án: Không cần phải chạy lệnh php artisan serve. Có thể tr
  http://recruitmentsystem.test/job-posts
 
 (Trường hợp không sử dụng Laragon, vui lòng chạy lệnh php artisan serve và truy cập http://127.0.0.1:8000/job-posts)
+=======
+   git clone <đường-link-github-của-bạn>
+>>>>>>> aaeb8b47b865a2ef6431cd162498840c0c3858e6

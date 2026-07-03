@@ -1,28 +1,50 @@
-    <!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Chi tiết Tin tuyển dụng</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; max-width: 600px; }
-        .detail-box { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
-        .detail-box p { font-size: 16px; line-height: 1.6; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
-        .btn-back { background: #6c757d; text-decoration: none; padding: 10px 15px; color: white; display: inline-block; margin-top: 15px; border-radius: 4px; }
-    </style>
-</head>
-<body>
-    <h1>Chi tiết Tin Tuyển Dụng</h1>
+@extends('layouts.app')
 
-    <div class="detail-box">
-        <p><strong>ID:</strong> {{ $jobPost->id }}</p>
-        <p><strong>Tiêu đề:</strong> {{ $jobPost->title }}</p>
-        <p><strong>Phòng ban:</strong> {{ $jobPost->department }}</p>
-        <p><strong>Mức lương:</strong> {{ number_format($jobPost->salary_min) }} VNĐ - {{ number_format($jobPost->salary_max) }} VNĐ</p>
-        <p><strong>Hạn nộp:</strong> {{ \Carbon\Carbon::parse($jobPost->deadline)->format('d/m/Y') }}</p>
-        <p><strong>Trạng thái:</strong> {{ ucfirst($jobPost->status) }}</p>
-        <p><strong>Ngày tạo:</strong> {{ $jobPost->created_at->format('d/m/Y H:i:s') }}</p>
+@section('content')
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Chi tiết Tuyển dụng</h4>
+            <a href="{{ route('job-posts.index') }}" class="btn btn-sm btn-light">Quay lại</a>
+        </div>
+        
+        <div class="card-body">
+            <h2 class="text-primary">{{ $jobPost->title }}</h2>
+            <hr>
+            
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Quốc gia đến:</strong></div>
+                <div class="col-md-9">{{ $jobPost->destination_country }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Số lượng tuyển:</strong></div>
+                <div class="col-md-9">{{ $jobPost->headcount }} người</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Loại công việc:</strong></div>
+                <div class="col-md-9">{{ $jobPost->job_type }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Loại Visa:</strong></div>
+                <div class="col-md-9">{{ $jobPost->visa_type }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Trạng thái:</strong></div>
+                <div class="col-md-9">
+                    <span class="badge bg-secondary">{{ $jobPost->status }}</span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Mô tả công việc:</strong></div>
+                <div class="col-md-9">
+                    {!! nl2br(e($jobPost->description)) !!}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-footer text-end">
+            <a href="{{ route('job-posts.edit', $jobPost->id) }}" class="btn btn-warning">Sửa tin này</a>
+        </div>
     </div>
-
-    <a href="{{ route('job-posts.index') }}" class="btn-back">Quay lại danh sách</a>
-</body>
-</html>
+</div>
+@endsection

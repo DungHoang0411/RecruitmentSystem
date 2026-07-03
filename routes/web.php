@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JobPostController; 
 
 Route::get('/', function () {
-    return view('welcome');
+   return redirect()->route('job-posts.index');
 });
 
 // Đăng ký toàn bộ route CRUD (index, create, store, show, edit, update, destroy)
