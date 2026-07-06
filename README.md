@@ -1,88 +1,77 @@
-<<<<<<< HEAD
-# Hệ thống Quản lý Tuyển dụng - Job Posts
-=======
-
 # Hệ thống Quản lý Tuyển dụng - Module Job Posts
 
-Dự án này là bài tập thực tập sinh xây dựng chức năng **Quản lý Tin tuyển dụng (Job Posts)** sử dụng framework Laravel 12.
->>>>>>> aaeb8b47b865a2ef6431cd162498840c0c3858e6
-
-##  Người thực hiện
-- **Thực tập sinh:** Dũng
-- **Vai trò:** Xây dựng CRUD, Validation, Filter và Pagination cho module Job Posts.
+##  Thông tin thực hiện
+* **Người thực hiện:** Dũng (Thực tập sinh IT)
+* **Vai trò:** Lên cấu trúc Database, xây dựng logic Controller (CRUD, Validation, Routing) và thiết kế giao diện View (Blade Template).
+* **Công nghệ:** Framework Laravel 12, Bootstrap 5, MySQL.
 
 ---
 
-## 🔗 Danh sách Tuyến đường (Routes / API Endpoints) để Test
+## Các tính năng kỹ thuật nổi bật đã hoàn thiện
 
-Toàn bộ hệ thống được xây dựng chuẩn RESTful qua `Route::resource`. Dưới đây là bảng thiết kế các endpoint để test luồng dữ liệu:
+### 1. Quản lý Dữ liệu & Routing Nâng cao
+* **Route Model Binding với Custom Slug:** Thay vì sử dụng `id` khóa chính trên URL (ví dụ: `/job-posts/20`), hệ thống đã được custom để tự động trích xuất và truy vấn theo `slug` (ví dụ: `/job-posts/thuc-tap-sinh-nhat-ban-6a4753...`), giúp URL thân thiện và bảo mật hơn.
+* **Tự động sinh Slug:** Hệ thống tự động tạo slug chuẩn kết hợp hàm `uniqid()` mỗi khi thêm mới hoặc cập nhật tiêu đề, đảm bảo tính duy nhất tuyệt đối trên toàn hệ thống.
+* **Soft Deletes (Xóa mềm):** Tích hợp tính năng xóa mềm của Laravel, bảo vệ dữ liệu không bị mất vĩnh viễn khi người dùng thao tác xóa.
 
-| HTTP Method | Endpoint (URL) | Chức năng | Dữ liệu truyền vào (Params/Body) |
-| :--- | :--- | :--- | :--- |
-| **GET** | `/job-posts` | Xem danh sách tin | `?status=active/closed` & `?department=...` |
-| **GET** | `/job-posts/create` | Giao diện form thêm tin | Không có |
-| **POST** | `/job-posts` | Xử lý lưu tin mới | `title`, `department`, `deadline`, `salary_min`, `salary_max`, `status` |
-| **GET** | `/job-posts/{id}` | Xem chi tiết 1 tin | ID của bản ghi trên URL |
-| **GET** | `/job-posts/{id}/edit`| Giao diện form sửa tin | ID của bản ghi trên URL |
-| **PUT** | `/job-posts/{id}` | Xử lý cập nhật tin | Giống phương thức POST |
-| **DELETE** | `/job-posts/{id}` | Xử lý xóa tin | ID của bản ghi trên URL |
+### 2. Validation & Xử lý Logic Nghiệp vụ (Form Request)
+* **Custom Rule chống trùng lặp:** Tích hợp logic `Rule::unique` kết hợp tùy chỉnh câu thông báo Tiếng Việt ("Tiêu đề bị trùng lặp") để chặn ngay lập tức nếu người dùng nhập trùng tiêu đề bài đăng.
+* **Logic Ràng buộc chặt chẽ:** * Lương tối đa (`salary_max`) bắt buộc phải $\ge$ Lương tối thiểu (`salary_min`).
+  * Tuổi tối đa (`age_max`) bắt buộc phải $\ge$ Tuổi tối thiểu (`age_min`).
+  * Tuổi lao động tối thiểu phải từ 18 tuổi trở lên.
+  * Ngày hết hạn (`expired_at`) phải sau ngày đăng bài (`published_at`).
 
-> **Ghi chú:** Các route POST, PUT, DELETE đều được bảo vệ bởi CSRF Token của Laravel. Quá trình test mượt mà nhất là thao tác trực tiếp trên giao diện trình duyệt.
+### 3. Tối ưu Giao diện Người dùng (UI/UX)
+* **Xử lý hiển thị số liệu:** Sử dụng hàm `round()` ép kiểu số nguyên để loại bỏ các số thập phân thừa (`.00`) khi hiển thị mức lương, giúp giao diện gọn gàng.
+* **Tối ưu Input Thời gian:** Chuyển đổi định dạng thu thập thời gian từ `datetime-local` sang `date` chuẩn, chỉ tập trung vào Ngày/Tháng/Năm, bỏ qua chọn Giờ/Phút gây rườm rà cho người nhập liệu.
+* **Đánh dấu trường bắt buộc:** Bổ sung hiển thị `*` màu đỏ trực quan tại tất cả các trường không được phép `null`.
+* **Quản lý Session Alerts:** Cấu trúc lại hệ thống thông báo flash session, đảm bảo chỉ hiển thị 1 thông báo duy nhất, chính xác và đã được Việt hóa 100% sau mỗi hành động (Thêm/Sửa/Xóa).
 
----
-
-##  Các tính năng kỹ thuật đã hoàn thành
-- [x] Khởi tạo project Laravel 12 và cấu hình Git (Commit chia nhỏ theo tính năng).
-- [x] Tạo Model, Migration và cấu hình Eloquent ORM.
-- [x] Tạo Seeder sinh 20 bản ghi mẫu tự động.
-- [x] Xây dựng Resource Controller và Route Resource (Code thủ công 100%, không dùng auto package).
-- [x] Form Request Validation (`salary_max >= salary_min` và các trường bắt buộc).
-- [x] Phân trang dữ liệu (10 bản ghi/trang).
-- [x] Lọc dữ liệu theo "Trạng thái" và "Phòng ban".
-- [x] Tự động hiển thị nhãn **(Hết hạn)** nếu deadline nhỏ hơn ngày hiện tại.
+### 4. Hiển thị & Tra cứu
+* **Hệ thống Lọc (Filter) Đa luồng:** Cho phép lọc tin tuyển dụng đồng thời theo: *Trạng thái*, *Quốc gia đến*, *Loại Visa*, *Hình thức công việc* và *Tìm kiếm theo tiêu đề*.
+* **Phân trang & Sắp xếp:** Dữ liệu được phân trang (10 bản ghi/trang), luôn ưu tiên hiển thị các tin được đánh dấu **"Nổi bật" (Featured)** lên đầu, sau đó mới sắp xếp theo thời gian tạo mới nhất.
 
 ---
 
-##  Hướng dẫn cài đặt và chạy thử (Tối ưu cho Laragon)
+## Tổng quan Cấu trúc Cơ sở dữ liệu (Bảng `job_posts`)
 
-Cách tiện lợi và chuyên nghiệp nhất để test dự án này là sử dụng tính năng **Virtual Host** của môi trường Laragon.
+Bảng dữ liệu được thiết kế mở rộng, chia làm 2 nhóm chính:
 
-**Quy trình thực hiện:**
+1. **Nhóm Bắt buộc (Required):**
+   * `title`, `slug`, `description`.
+   * `status` (Enum: draft, published, closed, expired).
+   * `destination_country`, `job_type`, `visa_type`, `headcount`, `created_by`.
 
-1. Mở Terminal của Laragon, di chuyển vào thư mục `www`:
+2. **Nhóm Tùy chọn (Nullable):**
+   * `salary_min`, `salary_max`, `salary_currency`, `salary_period`.
+   * `experience_years_min`, `age_min`, `age_max`, `gender_preference`.
+   * Thống kê hệ thống: `view_count` (Tự động tăng khi xem), `application_count`, `is_featured`.
+   * `published_at`, `expired_at`.
+
+---
+
+##  Hướng dẫn cài đặt & Chạy dự án (Dành cho Laragon/Localhost)
+
+1. Clone dự án về máy:
    ```bash
-<<<<<<< HEAD
-   cd C:\laragon\www
-Clone dự án về máy (đảm bảo đúng tên thư mục RecruitmentSystem):
+   git clone [https://github.com/DungHoang0411/RecruitmentSystem.git](https://github.com/DungHoang0411/RecruitmentSystem.git) RecruitmentSystem
+   cd RecruitmentSystem
+Cài đặt các thư viện PHP phụ thuộc:
 
 Bash
-git clone https://github.com/DungHoang0411/RecruitmentSystem.git RecruitmentSystem
-Di chuyển vào thư mục dự án và cài đặt các thư viện PHP:
-
-Bash
-cd RecruitmentSystem
 composer install
-Copy file cấu hình và tạo Application Key:
+Thiết lập biến môi trường và tạo Application Key:
 
 Bash
 copy .env.example .env
 php artisan key:generate
-Cấu hình Database:
+Cấu hình kết nối Cơ sở dữ liệu trong file .env (Tạo database recruitment_system bằng HeidiSQL/phpMyAdmin).
 
-Mở giao diện quản lý Database của Laragon (HeidiSQL/phpMyAdmin).
-
-Tạo một database rỗng với tên là: recruitment_system.
-
-Chạy lệnh tạo bảng và gieo 20 bản ghi mẫu:
+Chạy Migration để tạo bảng cấu trúc:
 
 Bash
-php artisan migrate --seed
-Khởi động lại Apache/Nginx trên Laragon (Bấm nút Stop rồi Start lại) để hệ thống nhận diện Virtual Host.
+php artisan migrate
+Truy cập hệ thống (Nếu dùng Laragon Virtual Host):
 
-Test dự án: Không cần phải chạy lệnh php artisan serve. Có thể truy cập trực tiếp hệ thống thông qua tên miền ảo nội bộ:
- http://recruitmentsystem.test/job-posts
-
-(Trường hợp không sử dụng Laragon, vui lòng chạy lệnh php artisan serve và truy cập http://127.0.0.1:8000/job-posts)
-=======
-   git clone <đường-link-github-của-bạn>
->>>>>>> aaeb8b47b865a2ef6431cd162498840c0c3858e6
+[http://recruitmentsystem.test/job-posts](http://recruitmentsystem.test/job-posts)
+(Hoặc chạy lệnh php artisan serve và truy cập http://127.0.0.1:8000/job-posts)
