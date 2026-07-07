@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <div class="container py-4">
         <h2>Chỉnh Sửa Tin Tuyển Dụng</h2>
 
@@ -14,7 +18,7 @@
             </div>
         @endif
 
-        <form action="{{ route('job-posts.update', $jobPost->slug) }}" method="POST">
+        <form action="{{ route('job-posts.update', $jobPost->slug) }}" method="POST" id="jobPostForm">
             @csrf
             @method('PUT')
 
@@ -26,15 +30,12 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Trạng thái <span class="text-danger">*</span></label>
-                    <select name="status" class="form-select" required>
-                        <option value="draft" {{ old('status', $jobPost->status) == 'draft' ? 'selected' : '' }}>Draft
-                        </option>
-                        <option value="published" {{ old('status', $jobPost->status) == 'published' ? 'selected' : '' }}>
-                            Published</option>
-                        <option value="closed" {{ old('status', $jobPost->status) == 'closed' ? 'selected' : '' }}>Closed
-                        </option>
-                        <option value="expired" {{ old('status', $jobPost->status) == 'expired' ? 'selected' : '' }}>Expired
-                        </option>
+                    <select name="status" class="form-select tom-select" required>
+                        @foreach ($statuses as $value => $label)
+                            <option value="{{ $value }}"
+                                {{ old('status', $jobPost->status) == $value ? 'selected' : '' }}>
+                                {{ $label }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -42,32 +43,32 @@
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Quốc gia đến <span class="text-danger">*</span></label>
-                    <input type="text" name="destination_country" class="form-control"
-                        value="{{ old('destination_country', $jobPost->destination_country) }}" required>
+                    <select name="destination_country" class="form-select tom-select" required>
+                        @foreach ($countries as $value => $label)
+                            <option value="{{ $value }}"
+                                {{ old('destination_country', $jobPost->destination_country) == $value ? 'selected' : '' }}>
+                                {{ $label }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Hình thức công việc <span class="text-danger">*</span></label>
-                    <select name="job_type" class="form-select" required>
-                        <option value="full_time"
-                            {{ old('job_type', $jobPost->job_type) == 'full_time' ? 'selected' : '' }}>Full time</option>
-                        <option value="part_time"
-                            {{ old('job_type', $jobPost->job_type) == 'part_time' ? 'selected' : '' }}>Part time</option>
-                        <option value="contract" {{ old('job_type', $jobPost->job_type) == 'contract' ? 'selected' : '' }}>
-                            Contract</option>
-                        <option value="internship"
-                            {{ old('job_type', $jobPost->job_type) == 'internship' ? 'selected' : '' }}>Internship</option>
+                    <select name="job_type" class="form-select tom-select" required>
+                        @foreach ($job_types as $value => $label)
+                            <option value="{{ $value }}"
+                                {{ old('job_type', $jobPost->job_type) == $value ? 'selected' : '' }}>
+                                {{ $label }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Loại Visa <span class="text-danger">*</span></label>
-                    <select name="visa_type" class="form-select" required>
-                        <option value="tokutei" {{ old('visa_type', $jobPost->visa_type) == 'tokutei' ? 'selected' : '' }}>
-                            Tokutei</option>
-                        <option value="ginou_jisshu"
-                            {{ old('visa_type', $jobPost->visa_type) == 'ginou_jisshu' ? 'selected' : '' }}>Ginou Jisshu
-                        </option>
-                        <option value="other" {{ old('visa_type', $jobPost->visa_type) == 'other' ? 'selected' : '' }}>
-                            Other</option>
+                    <select name="visa_type" class="form-select tom-select" required>
+                        @foreach ($visa_types as $value => $label)
+                            <option value="{{ $value }}"
+                                {{ old('visa_type', $jobPost->visa_type) == $value ? 'selected' : '' }}>
+                                {{ $label }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-3 mb-3">
@@ -120,16 +121,12 @@
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Yêu cầu giới tính</label>
-                    <select name="gender_preference" class="form-select">
-                        <option value="any"
-                            {{ old('gender_preference', $jobPost->gender_preference) == 'any' ? 'selected' : '' }}>Bất kỳ
-                        </option>
-                        <option value="male"
-                            {{ old('gender_preference', $jobPost->gender_preference) == 'male' ? 'selected' : '' }}>Nam
-                        </option>
-                        <option value="female"
-                            {{ old('gender_preference', $jobPost->gender_preference) == 'female' ? 'selected' : '' }}>Nữ
-                        </option>
+                    <select name="gender_preference" class="form-select tom-select">
+                        @foreach ($gender_preferences as $value => $label)
+                            <option value="{{ $value }}"
+                                {{ old('gender_preference', $jobPost->gender_preference) == $value ? 'selected' : '' }}>
+                                {{ $label }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -142,13 +139,15 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Ngày xuất bản</label>
-                    <input type="date" name="published_at" class="form-control"
-                        value="{{ old('published_at', $jobPost->published_at ? $jobPost->published_at->format('Y-m-d') : '') }}">
+                    <input type="text" name="published_at" class="form-control datepicker"
+                        value="{{ old('published_at', $jobPost->published_at ? $jobPost->published_at->format('Y-m-d') : '') }}"
+                        placeholder="Chọn ngày">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Ngày hết hạn</label>
-                    <input type="date" name="expired_at" class="form-control"
-                        value="{{ old('expired_at', $jobPost->expired_at ? $jobPost->expired_at->format('Y-m-d') : '') }}">
+                    <input type="text" name="expired_at" class="form-control datepicker"
+                        value="{{ old('expired_at', $jobPost->expired_at ? $jobPost->expired_at->format('Y-m-d') : '') }}"
+                        placeholder="Chọn ngày">
                 </div>
             </div>
 
@@ -160,21 +159,84 @@
 
             <div class="mb-3">
                 <label class="form-label">Mô tả công việc <span class="text-danger">*</span></label>
-                <textarea name="description" class="form-control" rows="4" required>{{ old('description', $jobPost->description) }}</textarea>
+                <textarea name="description" class="form-control editor" rows="4">{{ old('description', $jobPost->description) }}</textarea>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Yêu cầu công việc</label>
-                <textarea name="requirements" class="form-control" rows="3">{{ old('requirements', $jobPost->requirements) }}</textarea>
+                <textarea name="requirements" class="form-control editor" rows="3">{{ old('requirements', $jobPost->requirements) }}</textarea>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Quyền lợi</label>
-                <textarea name="benefits" class="form-control" rows="3">{{ old('benefits', $jobPost->benefits) }}</textarea>
+                <textarea name="benefits" class="form-control editor" rows="3">{{ old('benefits', $jobPost->benefits) }}</textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">Cập nhật</button>
             <a href="{{ route('job-posts.index') }}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Khởi tạo Tom Select cho tất cả phần chọn Option
+            document.querySelectorAll('.tom-select').forEach((el) => {
+                new TomSelect(el, {
+                    create: false,
+                    controlInput: null
+                });
+            });
+
+            // 2. Khởi tạo Flatpickr định dạng ngày chuẩn
+            flatpickr(".datepicker", {
+                dateFormat: "Y-m-d",
+                locale: "vn",
+                allowInput: true
+            });
+
+            // 3. Khởi tạo Trình soạn thảo TinyMCE
+            tinymce.init({
+                selector: '.editor',
+                height: 280,
+                menubar: false,
+                plugins: 'lists link table code wordcount',
+                toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat'
+            });
+        });
+    </script>
+
+    @if (session('success'))
+        <script>
+            Toastify({
+                text: "{{ session('success') }}",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: "#198754"
+                }
+            }).showToast();
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            Toastify({
+                text: "{{ session('error') }}",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: "#dc3545"
+                }
+            }).showToast();
+        </script>
+    @endif
 @endsection

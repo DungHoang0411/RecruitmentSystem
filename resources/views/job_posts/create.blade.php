@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <div class="container py-4">
         <h2>Thêm Tin Tuyển Dụng Mới</h2>
 
@@ -14,7 +18,7 @@
             </div>
         @endif
 
-        <form action="{{ route('job-posts.store') }}" method="POST">
+        <form action="{{ route('job-posts.store') }}" method="POST" id="jobPostForm">
             @csrf
 
             <div class="row">
@@ -24,7 +28,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Trạng thái <span class="text-danger">*</span></label>
-                    <select name="status" class="form-select" required>
+                    <select name="status" class="form-select tom-select" required>
                         @foreach ($statuses as $value => $label)
                             <option value="{{ $value }}" {{ old('status') == $value ? 'selected' : '' }}>
                                 {{ $label }}</option>
@@ -36,7 +40,7 @@
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Quốc gia đến <span class="text-danger">*</span></label>
-                    <select name="destination_country" class="form-select" required>
+                    <select name="destination_country" class="form-select tom-select" required>
                         @foreach ($countries as $value => $label)
                             <option value="{{ $value }}"
                                 {{ old('destination_country') == $value ? 'selected' : '' }}>{{ $label }}</option>
@@ -45,7 +49,7 @@
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Hình thức công việc <span class="text-danger">*</span></label>
-                    <select name="job_type" class="form-select" required>
+                    <select name="job_type" class="form-select tom-select" required>
                         @foreach ($job_types as $value => $label)
                             <option value="{{ $value }}" {{ old('job_type') == $value ? 'selected' : '' }}>
                                 {{ $label }}</option>
@@ -54,7 +58,7 @@
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Loại Visa <span class="text-danger">*</span></label>
-                    <select name="visa_type" class="form-select" required>
+                    <select name="visa_type" class="form-select tom-select" required>
                         @foreach ($visa_types as $value => $label)
                             <option value="{{ $value }}" {{ old('visa_type') == $value ? 'selected' : '' }}>
                                 {{ $label }}</option>
@@ -105,10 +109,11 @@
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Yêu cầu giới tính</label>
-                    <select name="gender_preference" class="form-select">
+                    <select name="gender_preference" class="form-select tom-select">
                         @foreach ($gender_preferences as $value => $label)
                             <option value="{{ $value }}"
-                                {{ old('gender_preference', 'any') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                {{ old('gender_preference', 'any') == $value ? 'selected' : '' }}>{{ $label }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -121,11 +126,13 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Ngày xuất bản</label>
-                    <input type="date" name="published_at" class="form-control" value="{{ old('published_at') }}">
+                    <input type="text" name="published_at" class="form-control datepicker"
+                        value="{{ old('published_at') }}" placeholder="Chọn ngày">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Ngày hết hạn</label>
-                    <input type="date" name="expired_at" class="form-control" value="{{ old('expired_at') }}">
+                    <input type="text" name="expired_at" class="form-control datepicker"
+                        value="{{ old('expired_at') }}" placeholder="Chọn ngày">
                 </div>
             </div>
 
@@ -137,21 +144,84 @@
 
             <div class="mb-3">
                 <label class="form-label">Mô tả công việc <span class="text-danger">*</span></label>
-                <textarea name="description" class="form-control" rows="4" required>{{ old('description') }}</textarea>
+                <textarea name="description" class="form-control editor" rows="4">{{ old('description') }}</textarea>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Yêu cầu công việc</label>
-                <textarea name="requirements" class="form-control" rows="3">{{ old('requirements') }}</textarea>
+                <textarea name="requirements" class="form-control editor" rows="3">{{ old('requirements') }}</textarea>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Quyền lợi</label>
-                <textarea name="benefits" class="form-control" rows="3">{{ old('benefits') }}</textarea>
+                <textarea name="benefits" class="form-control editor" rows="3">{{ old('benefits') }}</textarea>
             </div>
 
             <button type="submit" class="btn btn-success">Lưu lại</button>
             <a href="{{ route('job-posts.index') }}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Khởi tạo Tom Select cho tất cả phần chọn Option
+            document.querySelectorAll('.tom-select').forEach((el) => {
+                new TomSelect(el, {
+                    create: false,
+                    controlInput: null
+                });
+            });
+
+            // 2. Khởi tạo Flatpickr định dạng ngày chuẩn
+            flatpickr(".datepicker", {
+                dateFormat: "Y-m-d",
+                locale: "vn",
+                allowInput: true
+            });
+
+            // 3. Khởi tạo Trình soạn thảo TinyMCE
+            tinymce.init({
+                selector: '.editor',
+                height: 280,
+                menubar: false,
+                plugins: 'lists link table code wordcount',
+                toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat'
+            });
+        });
+    </script>
+
+    @if (session('success'))
+        <script>
+            Toastify({
+                text: "{{ session('success') }}",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: "#198754"
+                }
+            }).showToast();
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            Toastify({
+                text: "{{ session('error') }}",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: "#dc3545"
+                }
+            }).showToast();
+        </script>
+    @endif
 @endsection
