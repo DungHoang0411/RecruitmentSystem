@@ -25,10 +25,10 @@
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Trạng thái <span class="text-danger">*</span></label>
                     <select name="status" class="form-select" required>
-                        <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                        <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Published</option>
-                        <option value="closed" {{ old('status') == 'closed' ? 'selected' : '' }}>Closed</option>
-                        <option value="expired" {{ old('status') == 'expired' ? 'selected' : '' }}>Expired</option>
+                        @foreach ($statuses as $value => $label)
+                            <option value="{{ $value }}" {{ old('status') == $value ? 'selected' : '' }}>
+                                {{ $label }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -36,26 +36,29 @@
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Quốc gia đến <span class="text-danger">*</span></label>
-                    <input type="text" name="destination_country" class="form-control"
-                        value="{{ old('destination_country') }}" required>
+                    <select name="destination_country" class="form-select" required>
+                        @foreach ($countries as $value => $label)
+                            <option value="{{ $value }}"
+                                {{ old('destination_country') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Hình thức công việc <span class="text-danger">*</span></label>
                     <select name="job_type" class="form-select" required>
-                        <option value="full_time" {{ old('job_type') == 'full_time' ? 'selected' : '' }}>Full time</option>
-                        <option value="part_time" {{ old('job_type') == 'part_time' ? 'selected' : '' }}>Part time</option>
-                        <option value="contract" {{ old('job_type') == 'contract' ? 'selected' : '' }}>Contract</option>
-                        <option value="internship" {{ old('job_type') == 'internship' ? 'selected' : '' }}>Internship
-                        </option>
+                        @foreach ($job_types as $value => $label)
+                            <option value="{{ $value }}" {{ old('job_type') == $value ? 'selected' : '' }}>
+                                {{ $label }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Loại Visa <span class="text-danger">*</span></label>
                     <select name="visa_type" class="form-select" required>
-                        <option value="tokutei" {{ old('visa_type') == 'tokutei' ? 'selected' : '' }}>Tokutei</option>
-                        <option value="ginou_jisshu" {{ old('visa_type') == 'ginou_jisshu' ? 'selected' : '' }}>Ginou
-                            Jisshu</option>
-                        <option value="other" {{ old('visa_type') == 'other' ? 'selected' : '' }}>Other</option>
+                        @foreach ($visa_types as $value => $label)
+                            <option value="{{ $value }}" {{ old('visa_type') == $value ? 'selected' : '' }}>
+                                {{ $label }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-3 mb-3">
@@ -103,9 +106,10 @@
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Yêu cầu giới tính</label>
                     <select name="gender_preference" class="form-select">
-                        <option value="any" {{ old('gender_preference') == 'any' ? 'selected' : '' }}>Bất kỳ</option>
-                        <option value="male" {{ old('gender_preference') == 'male' ? 'selected' : '' }}>Nam</option>
-                        <option value="female" {{ old('gender_preference') == 'female' ? 'selected' : '' }}>Nữ</option>
+                        @foreach ($gender_preferences as $value => $label)
+                            <option value="{{ $value }}"
+                                {{ old('gender_preference', 'any') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>

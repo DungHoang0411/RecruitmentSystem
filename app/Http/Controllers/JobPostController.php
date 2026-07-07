@@ -9,6 +9,36 @@ use Illuminate\Validation\Rule;
 
 class JobPostController extends Controller
 {
+    private function getFilterData(): array
+    {
+        return [
+            'statuses' => [
+                'draft' => 'Draft',
+                'published' => 'Published',
+                'closed' => 'Closed',
+                'expired' => 'Expired',
+            ],
+            'countries' => [
+                'JP' => 'Nhật Bản',
+                'KR' => 'Hàn Quốc',
+                'TW' => 'Đài Loan',
+                'SG' => 'Singapore',
+            ],
+            'visa_types' => [
+                'tokutei' => 'Tokutei',
+                'ginou_jisshu' => 'Ginou Jisshu',
+                'other' => 'Other',
+            ],
+            'job_types' => [
+                'full_time' => 'Full time',
+                'part_time' => 'Part time',
+                'contract' => 'Contract',
+                'internship' => 'Internship',
+            ],
+            'gender_preferences' => ['any' => 'Bất kỳ', 'male' => 'Nam', 'female' => 'Nữ']
+        ];
+    }
+
     public function index(Request $request)
     {
         $query = JobPost::query();
@@ -38,12 +68,12 @@ class JobPostController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('job_posts.index', compact('jobPosts'));
+        return view('job_posts.index', array_merge(compact('jobPosts'), $this->getFilterData()));
     }
 
     public function create()
     {
-        return view('job_posts.create');
+        return view('job_posts.create', $this->getFilterData());
     }
 
     public function store(Request $request)
@@ -75,7 +105,7 @@ class JobPostController extends Controller
 
     public function edit(JobPost $jobPost)
     {
-        return view('job_posts.edit', compact('jobPost'));
+        return view('job_posts.edit', array_merge(compact('jobPost'), $this->getFilterData()));
     }
 
     public function update(Request $request, JobPost $jobPost)
@@ -118,7 +148,7 @@ class JobPostController extends Controller
             ],
             'description' => 'required|string',
             'status' => 'required|in:draft,published,closed,expired',
-            'destination_country' => 'required|string|max:255',
+            'destination_country' => ['required', 'string', Rule::in(array_keys($this->getFilterData()['countries']))],
             'job_type' => 'required|in:full_time,part_time,contract,internship',
             'visa_type' => 'required|in:tokutei,ginou_jisshu,other',
             'headcount' => 'required|integer|min:1',
