@@ -1,9 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
+
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 200px;
+        }
+    </style>
 
     <div class="container py-4">
         <h2>Chỉnh Sửa Tin Tuyển Dụng</h2>
@@ -159,17 +165,17 @@
 
             <div class="mb-3">
                 <label class="form-label">Mô tả công việc <span class="text-danger">*</span></label>
-                <textarea name="description" class="form-control editor" rows="4">{{ old('description', $jobPost->description) }}</textarea>
+                <textarea name="description" class="form-control editor">{{ old('description', $jobPost->description) }}</textarea>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Yêu cầu công việc</label>
-                <textarea name="requirements" class="form-control editor" rows="3">{{ old('requirements', $jobPost->requirements) }}</textarea>
+                <textarea name="requirements" class="form-control editor">{{ old('requirements', $jobPost->requirements) }}</textarea>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Quyền lợi</label>
-                <textarea name="benefits" class="form-control editor" rows="3">{{ old('benefits', $jobPost->benefits) }}</textarea>
+                <textarea name="benefits" class="form-control editor">{{ old('benefits', $jobPost->benefits) }}</textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">Cập nhật</button>
@@ -177,15 +183,15 @@
         </form>
     </div>
 
+    <!-- Scripts cho Thư viện -->
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 1. Khởi tạo Tom Select cho tất cả phần chọn Option
             document.querySelectorAll('.tom-select').forEach((el) => {
                 new TomSelect(el, {
                     create: false,
@@ -193,50 +199,54 @@
                 });
             });
 
-            // 2. Khởi tạo Flatpickr định dạng ngày chuẩn
             flatpickr(".datepicker", {
                 dateFormat: "Y-m-d",
                 locale: "vn",
                 allowInput: true
             });
 
-            // 3. Khởi tạo Trình soạn thảo TinyMCE
-            tinymce.init({
-                selector: '.editor',
-                height: 280,
-                menubar: false,
-                plugins: 'lists link table code wordcount',
-                toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat'
+            document.querySelectorAll('.editor').forEach((editorElement) => {
+                ClassicEditor
+                    .create(editorElement)
+                    .catch(error => {
+                        console.error('Lỗi khởi tạo CKEditor:', error);
+                    });
             });
         });
     </script>
 
     @if (session('success'))
         <script>
-            Toastify({
-                text: "{{ session('success') }}",
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                style: {
-                    background: "#198754"
-                }
-            }).showToast();
+            document.addEventListener("DOMContentLoaded", function() {
+                Toastify({
+                    text: "{{ session('success') }}",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    style: {
+                        background: "#198754"
+                    }
+                }).showToast();
+            });
         </script>
     @endif
+
     @if (session('error'))
         <script>
-            Toastify({
-                text: "{{ session('error') }}",
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                style: {
-                    background: "#dc3545"
-                }
-            }).showToast();
+            document.addEventListener("DOMContentLoaded", function() {
+                Toastify({
+                    text: "{{ session('error') }}",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    style: {
+                        background: "#dc3545"
+                    }
+                }).showToast();
+            });
         </script>
     @endif
+    </script>
 @endsection

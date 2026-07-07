@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Quản lý Tin Tuyển Dụng</h2>
@@ -13,35 +16,40 @@
                     value="{{ request('search') }}">
             </div>
             <div class="col-md-2">
-                <select name="status" class="form-select">
+                <select name="status" class="form-select tom-select-filter">
                     <option value="">-- Trạng thái --</option>
-                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                    <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Published</option>
-                    <option value="closed" {{ request('status') == 'closed' ? 'selected' : '' }}>Closed</option>
-                    <option value="expired" {{ request('status') == 'expired' ? 'selected' : '' }}>Expired</option>
+                    @foreach ($statuses as $value => $label)
+                        <option value="{{ $value }}" {{ request('status') == $value ? 'selected' : '' }}>
+                            {{ $label }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="col-md-2">
-                <input type="text" name="destination_country" class="form-control" placeholder="Quốc gia (JP, KR...)"
-                    value="{{ request('destination_country') }}">
+                <select name="destination_country" class="form-select tom-select-filter">
+                    <option value="">-- Quốc gia đến --</option>
+                    @foreach ($countries as $value => $label)
+                        <option value="{{ $value }}"
+                            {{ request('destination_country') == $value ? 'selected' : '' }}>
+                            {{ $label }}</option>
+                    @endforeach
+                </select>
             </div>
             <div class="col-md-2">
-                <select name="visa_type" class="form-select">
+                <select name="visa_type" class="form-select tom-select-filter">
                     <option value="">-- Loại Visa --</option>
-                    <option value="tokutei" {{ request('visa_type') == 'tokutei' ? 'selected' : '' }}>Tokutei</option>
-                    <option value="ginou_jisshu" {{ request('visa_type') == 'ginou_jisshu' ? 'selected' : '' }}>Ginou Jisshu
-                    </option>
-                    <option value="other" {{ request('visa_type') == 'other' ? 'selected' : '' }}>Other</option>
+                    @foreach ($visa_types as $value => $label)
+                        <option value="{{ $value }}" {{ request('visa_type') == $value ? 'selected' : '' }}>
+                            {{ $label }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="col-md-2">
-                <select name="job_type" class="form-select">
+                <select name="job_type" class="form-select tom-select-filter">
                     <option value="">-- Hình thức --</option>
-                    <option value="full_time" {{ request('job_type') == 'full_time' ? 'selected' : '' }}>Full time</option>
-                    <option value="part_time" {{ request('job_type') == 'part_time' ? 'selected' : '' }}>Part time</option>
-                    <option value="contract" {{ request('job_type') == 'contract' ? 'selected' : '' }}>Contract</option>
-                    <option value="internship" {{ request('job_type') == 'internship' ? 'selected' : '' }}>Internship
-                    </option>
+                    @foreach ($job_types as $value => $label)
+                        <option value="{{ $value }}" {{ request('job_type') == $value ? 'selected' : '' }}>
+                            {{ $label }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="col-md-1">
@@ -73,27 +81,28 @@
                                 <span class="badge bg-warning text-dark">Nổi bật</span>
                             @endif
                         </td>
-                        <td>{{ $item->destination_country }}</td>
-                        <td>{{ $item->visa_type }}</td>
-                        <td>{{ $item->job_type }}</td>
+                        <td>{{ $countries[$item->destination_country] ?? $item->destination_country }}</td>
+                        <td>{{ $visa_types[$item->visa_type] ?? ucfirst($item->visa_type) }}</td>
+                        <td>{{ $job_types[$item->job_type] ?? ucfirst($item->job_type) }}</td>
                         <td>{{ $item->headcount }}</td>
                         <td>{{ $item->view_count }}</td>
                         <td>
                             <span
                                 class="badge
-                        @if ($item->status == 'published') bg-success
-                        @elseif($item->status == 'draft') bg-secondary
-                        @elseif($item->status == 'closed') bg-dark
-                        @else bg-danger @endif">
-                                {{ ucfirst($item->status) }}
+                                @if ($item->status == 'published') bg-success
+                                @elseif($item->status == 'draft') bg-secondary
+                                @elseif($item->status == 'closed') bg-dark
+                                @else bg-danger @endif">
+                                {{ $statuses[$item->status] ?? ucfirst($item->status) }}
                             </span>
                         </td>
                         <td>
                             <a href="{{ route('job-posts.show', $item->slug) }}"
                                 class="btn btn-sm btn-info text-white">Xem</a>
                             <a href="{{ route('job-posts.edit', $item->slug) }}" class="btn btn-sm btn-warning">Sửa</a>
-                            <form action="{{ route('job-posts.destroy', $item->slug) }}" method="POST" class="d-inline"
-                                onsubmit="return confirm('Bạn có chắc muốn xóa?');">
+
+                            <form action="{{ route('job-posts.destroy', $item->slug) }}" method="POST"
+                                class="d-inline form-delete-post">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
@@ -108,4 +117,76 @@
             {{ $jobPosts->links() }}
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('.tom-select-filter').forEach((el) => {
+                new TomSelect(el, {
+                    create: false,
+                    controlInput: null,
+                    plugins: ['dropdown_input']
+                });
+            });
+
+            document.querySelectorAll('.form-delete-post').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Xác nhận xóa?',
+                        text: "Hệ thống sẽ chuyển tin tuyển dụng này vào danh sách lưu trữ xóa mềm!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Đồng ý, xóa ngay!',
+                        cancelButtonText: 'Hủy bỏ'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+    @if (session('success'))
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                Toastify({
+                    text: "{{ session('success') }}",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    style: {
+                        background: "#198754"
+                    }
+                }).showToast();
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                Toastify({
+                    text: "{{ session('error') }}",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    style: {
+                        background: "#dc3545"
+                    }
+                }).showToast();
+            });
+        </script>
+    @endif
+    </script>
 @endsection

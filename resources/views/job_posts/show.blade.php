@@ -87,21 +87,19 @@
                 <hr>
                 <div class="mb-3">
                     <h5>Mô tả công việc:</h5>
-                    <p class="border p-3 bg-light" style="white-space: pre-wrap;">{{ $jobPost->description }}</p>
+                    <div class="border p-3 bg-light ck-content">{!! $jobPost->description !!}</div>
                 </div>
                 <div class="mb-3">
                     <h5>Yêu cầu công việc:</h5>
-                    <p class="border p-3 bg-light" style="white-space: pre-wrap;">
-                        {{ $jobPost->requirements ?? 'Không có' }}</p>
+                    <div class="border p-3 bg-light ck-content">{!! $jobPost->requirements ?? 'Không có' !!}</div>
                 </div>
                 <div class="mb-3">
                     <h5>Quyền lợi:</h5>
-                    <p class="border p-3 bg-light" style="white-space: pre-wrap;">{{ $jobPost->benefits ?? 'Không có' }}
-                    </p>
+                    <div class="border p-3 bg-light ck-content">{!! $jobPost->benefits ?? 'Không có' !!}</div>
                 </div>
             </div>
             <div class="card-footer text-muted text-end fs-7">
-                Người tạo ID: {{ $jobPost->created_by }} | Tạo lúc: {{ $jobPost->created_at }} | Cập nhật lúc:
+                {{ $jobPost->created_by }} | Tạo lúc: {{ $jobPost->created_at }} | Cập nhật lúc:
                 {{ $jobPost->updated_at }}
             </div>
         </div>
