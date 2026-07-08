@@ -1,13 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\JobPostController;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
-
-Route::resource('job-posts', JobPostController::class);
+use App\Http\Controllers\JobPostController;
 
 Route::get('/', function () {
-    return redirect()->route('job-posts.index');
+    return Auth::check() ? redirect('/job-posts') : redirect('/login');
 });
 
 Route::middleware('guest')->group(function () {
@@ -15,9 +14,12 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'processRegister'])->name('register.process');
 
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'processLogin'])->middleware('throttle:5,1')->name('login.process');
-
-    Route::get('/verify-email/{token}', [AuthController::class, 'verifyEmail'])->name('verify.email');
+    Route::post('/login', [AuthController::class, 'processLogin'])->name('login.process');
 });
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/verify-email/{token}', [AuthController::class, 'verifyEmail'])->name('verify.email');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::resource('job-posts', JobPostController::class);
+});

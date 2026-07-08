@@ -21,7 +21,7 @@ class WelcomeCandidateMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Xác thực tài khoản và Chào mừng đến với Recruitment System')
+        return $this->subject('Xác thực tài khoản - Recruitment System')
                     ->view('emails.welcome_candidate');
     }
 }

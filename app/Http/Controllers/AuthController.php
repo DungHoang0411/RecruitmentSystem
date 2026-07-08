@@ -34,7 +34,7 @@ class AuthController extends Controller
             'terms' => 'accepted'
         ], [
             'password.regex' => 'Mật khẩu tối thiểu 8 ký tự, có ít nhất 1 chữ hoa và 1 chữ số',
-            'email.unique' => 'VALIDATION_ERROR'
+            'email.unique' => 'Email này đã được đăng ký trong hệ thống.'
         ]);
 
         $user = User::create([
@@ -66,18 +66,21 @@ class AuthController extends Controller
         }
 
         if (Carbon::parse($record->created_at)->addHours(48)->isPast()) {
-            return redirect()->route('login')->with('error', 'Token đã hết hạn. Vui lòng yêu cầu gửi lại email xác nhận.');
+            return redirect()->route('login')->with('error', 'Liên kết đã hết hạn. Vui lòng yêu cầu gửi lại email xác nhận.');
         }
 
         $user = User::where('email', $record->email)->first();
 
         if ($user) {
-            $user->update(['email_verified_at' => Carbon::now()]);
+            $user->email_verified_at = Carbon::now();
+            $user->save();
+
             DB::table('email_verify_tokens')->where('email', $user->email)->delete();
+
             return redirect()->route('login')->with('success', 'Xác minh email thành công. Bạn có thể đăng nhập ngay bây giờ.');
         }
 
-        return redirect()->route('login')->with('error', 'Đã xảy ra lỗi.');
+        return redirect()->route('login')->with('error', 'Đã xảy ra lỗi trong quá trình xác thực.');
     }
 
     public function showLogin()
@@ -94,22 +97,31 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if ($user && $user->status === 'banned') {
-            return back()->with('error', 'Tài khoản này đã bị ban');
+        if (!$user) {
+            return back()->with('error', 'Tài khoản sai email hoặc mật khẩu.');
+        }
+
+        if ($user->status === 'banned') {
+            return back()->with('error', 'Tài khoản này đã bị khóa hệ thống.');
+        }
+
+        if (is_null($user->email_verified_at)) {
+            return back()->with('error', 'Tài khoản của bạn chưa được xác thực email. Vui lòng kiểm tra hộp thư để kích hoạt tài khoản.');
         }
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $request->session()->regenerate();
 
             if (Auth::user()->role === 'candidate') {
-                return redirect()->intended('/dashboard');
+                return redirect()->intended('/job-posts');
             }
 
             return redirect()->intended('/');
         }
 
-        return back()->with('error', 'Tài khoản sai email hoặc mật khẩu');
+        return back()->with('error', 'Tài khoản sai email hoặc mật khẩu.');
     }
+
     public function logout(Request $request)
     {
         Auth::logout();
