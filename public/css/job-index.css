@@ -1,0 +1,138 @@
+/* =========================================
+   Biến (Variables) toàn cục
+========================================= */
+:root {
+    --brand-primary: #00b14f;
+    --brand-hover: #008139;
+    --brand-bg: #f8f9fa;
+    --text-main: #212529;
+    --text-muted: #6c757d;
+}
+
+body {
+    background-color: var(--brand-bg);
+}
+
+/* =========================================
+   Block: Hero Section & Filter Bar
+========================================= */
+.hero-banner {
+    background: linear-gradient(135deg, var(--brand-primary) 0%, #00602b 100%);
+    padding: 3rem 0 5rem 0;
+    color: white;
+}
+
+.filter-bar {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    margin-top: -3.5rem; /* Đẩy thanh search đè lên phần hero */
+    position: relative;
+    z-index: 10;
+}
+
+.filter-bar__label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+/* =========================================
+   Block: Job Card (Thiết kế dạng lưới)
+========================================= */
+.job-card {
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--brand-primary);
+    box-shadow: 0 12px 24px rgba(0, 177, 79, 0.12);
+}
+
+.job-card__header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.job-card__logo {
+    width: 64px;
+    height: 64px;
+    background: #f8f9fa;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.job-card__title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-decoration: none;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.2s ease;
+}
+
+.job-card__title:hover {
+    color: var(--brand-primary);
+}
+
+.job-card__salary {
+    font-weight: 700;
+    color: var(--brand-primary);
+    font-size: 1.05rem;
+    margin-top: 0.5rem;
+}
+
+.job-card__body {
+    flex-grow: 1;
+}
+
+.job-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.job-card__tag-item {
+    background: #f1f2f4;
+    color: #495057;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.job-card__footer {
+    border-top: 1px dashed #eaeaea;
+    padding-top: 1rem;
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* =========================================
+   Modifiers & Tiện ích
+========================================= */
+.btn-brand { background-color: var(--brand-primary); color: white; font-weight: 600; }
+.btn-brand:hover { background-color: var(--brand-hover); color: white; }
+.badge-hot { background: #dc3545; color: white; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; }
