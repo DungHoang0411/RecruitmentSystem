@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobPost;
+use App\Models\Category;
+use App\Models\Company;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -41,7 +44,7 @@ class JobPostController extends Controller
 
     public function index(Request $request)
     {
-        $query = JobPost::query();
+        $query = JobPost::with(['category', 'company', 'tags']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -73,7 +76,11 @@ class JobPostController extends Controller
 
     public function create()
     {
-        return view('job_posts.create', $this->getFilterData());
+        $categories = Category::all();
+        $companies = Company::all();
+        $tags = Tag::all();
+
+        return view('job_posts.create', array_merge(compact('categories', 'companies', 'tags'), $this->getFilterData()));
     }
 
     public function store(Request $request)
@@ -84,13 +91,16 @@ class JobPostController extends Controller
         );
 
         $validated['slug'] = Str::slug($request->title) . '-' . uniqid();
-
         $validated['created_by'] = auth()->id() ?? 1;
         $validated['is_featured'] = $request->has('is_featured');
         $validated['view_count'] = 0;
         $validated['application_count'] = 0;
 
-        JobPost::create($validated);
+        $jobPost = JobPost::create($validated);
+
+        if ($request->has('tags')) {
+            $jobPost->tags()->attach($request->tags);
+        }
 
         return redirect()
             ->route('job-posts.index')
@@ -100,12 +110,18 @@ class JobPostController extends Controller
     public function show(JobPost $jobPost)
     {
         $jobPost->increment('view_count');
+        $jobPost->load(['category', 'company', 'tags']);
+
         return view('job_posts.show', compact('jobPost'));
     }
 
     public function edit(JobPost $jobPost)
     {
-        return view('job_posts.edit', array_merge(compact('jobPost'), $this->getFilterData()));
+        $categories = Category::all();
+        $companies = Company::all();
+        $tags = Tag::all();
+
+        return view('job_posts.edit', array_merge(compact('jobPost', 'categories', 'companies', 'tags'), $this->getFilterData()));
     }
 
     public function update(Request $request, JobPost $jobPost)
@@ -122,6 +138,12 @@ class JobPostController extends Controller
         $validated['is_featured'] = $request->has('is_featured');
 
         $jobPost->update($validated);
+
+        if ($request->has('tags')) {
+            $jobPost->tags()->sync($request->tags);
+        } else {
+            $jobPost->tags()->detach();
+        }
 
         return redirect()
             ->route('job-posts.index')
@@ -146,6 +168,11 @@ class JobPostController extends Controller
                 'max:255',
                 Rule::unique('job_posts', 'title')->ignore($ignoreId),
             ],
+            'category_id' => 'required|exists:categories,id',
+            'company_id' => 'required|exists:companies,id',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
+
             'description' => 'required|string',
             'status' => 'required|in:draft,published,closed,expired',
             'destination_country' => ['required', 'string', Rule::in(array_keys($this->getFilterData()['countries']))],

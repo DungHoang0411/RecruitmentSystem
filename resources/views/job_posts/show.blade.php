@@ -19,6 +19,25 @@
                     <div class="col-md-3"><strong>Trạng thái:</strong></div>
                     <div class="col-md-9"><span class="badge bg-primary">{{ $jobPost->status }}</span></div>
                 </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>Công ty:</strong></div>
+                    <div class="col-md-9 text-primary fw-bold">{{ $jobPost->company->name ?? 'Chưa cập nhật' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>Danh mục:</strong></div>
+                    <div class="col-md-9">{{ $jobPost->category->name ?? 'Chưa phân loại' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>Tags (Thẻ):</strong></div>
+                    <div class="col-md-9">
+                        @forelse($jobPost->tags as $tag)
+                            <span class="badge bg-secondary me-1">{{ $tag->name }}</span>
+                        @empty
+                            <span class="text-muted fst-italic">Không có thẻ nào</span>
+                        @endforelse
+                    </div>
+                </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>Quốc gia đến:</strong></div>
                     <div class="col-md-9">{{ $jobPost->destination_country }}</div>
@@ -32,7 +51,7 @@
                     <div class="col-md-9">{{ $jobPost->visa_type }}</div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-3"><strong>Số lượng tuyển (Headcount):</strong></div>
+                    <div class="col-md-3"><strong>Số lượng tuyển:</strong></div>
                     <div class="col-md-9">{{ $jobPost->headcount }}</div>
                 </div>
                 <div class="row mb-3">
@@ -42,47 +61,17 @@
                             {{ $jobPost->salary_min ? round($jobPost->salary_min) : '0' }} -
                             {{ $jobPost->salary_max ? round($jobPost->salary_max) : 'Không giới hạn' }}
                             {{ $jobPost->salary_currency }} / {{ $jobPost->salary_period }}
-                        @else
-                            Thỏa thuận
-                        @endif
+                        @else Thỏa thuận @endif
                     </div>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-md-3"><strong>Kinh nghiệm tối thiểu:</strong></div>
-                    <div class="col-md-9">
-                        {{ $jobPost->experience_years_min ? $jobPost->experience_years_min . ' năm' : 'Không yêu cầu' }}
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3"><strong>Độ tuổi yêu cầu:</strong></div>
-                    <div class="col-md-9">
-                        @if ($jobPost->age_min || $jobPost->age_max)
-                            {{ $jobPost->age_min ?? 'Không giới hạn dưới' }} -
-                            {{ $jobPost->age_max ?? 'Không giới hạn trên' }} tuổi
-                        @else
-                            Không yêu cầu
-                        @endif
-                    </div>
-                </div>
+
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>Yêu cầu giới tính:</strong></div>
                     <div class="col-md-9">{{ $jobPost->gender_preference }}</div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-3"><strong>Địa điểm làm việc:</strong></div>
-                    <div class="col-md-9">{{ $jobPost->work_location ?? 'Chưa cập nhật' }}</div>
-                </div>
-                <div class="row mb-3">
                     <div class="col-md-3"><strong>Lượt xem / Ứng tuyển:</strong></div>
-                    <div class="col-md-9">{{ $jobPost->view_count }} lượt xem / {{ $jobPost->application_count }} ứng
-                        tuyển</div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3"><strong>Ngày xuất bản / Hết hạn:</strong></div>
-                    <div class="col-md-9">
-                        {{ $jobPost->published_at ? $jobPost->published_at->format('d/m/Y') : 'Chưa xuất bản' }} /
-                        {{ $jobPost->expired_at ? $jobPost->expired_at->format('d/m/Y') : 'Không hết hạn' }}
-                    </div>
+                    <div class="col-md-9">{{ $jobPost->view_count }} lượt xem / {{ $jobPost->application_count }} ứng tuyển</div>
                 </div>
                 <hr>
                 <div class="mb-3">
@@ -99,8 +88,7 @@
                 </div>
             </div>
             <div class="card-footer text-muted text-end fs-7">
-                {{ $jobPost->created_by }} | Tạo lúc: {{ $jobPost->created_at }} | Cập nhật lúc:
-                {{ $jobPost->updated_at }}
+                {{ $jobPost->created_by }} | Tạo lúc: {{ $jobPost->created_at }} | Cập nhật lúc: {{ $jobPost->updated_at }}
             </div>
         </div>
     </div>

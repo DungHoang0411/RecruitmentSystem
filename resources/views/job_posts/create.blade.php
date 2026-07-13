@@ -42,6 +42,37 @@
                 </div>
             </div>
 
+            <div class="row border-start border-4 border-success ps-3 mb-3 ms-1 bg-light py-2">
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Công ty <span class="text-danger">*</span></label>
+                    <select name="company_id" class="form-select tom-select" required>
+                        <option value="">-- Chọn Công ty --</option>
+                        @foreach($companies as $company)
+                            <option value="{{ $company->id }}" {{ old('company_id') == $company->id ? 'selected' : '' }}>{{ $company->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Danh mục <span class="text-danger">*</span></label>
+                    <select name="category_id" class="form-select tom-select" required>
+                        <option value="">-- Chọn Danh mục --</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-12 mt-2">
+                    <label class="form-label mb-2">Tags (Thẻ phân loại)</label>
+                    <div class="d-flex flex-wrap gap-3">
+                        @foreach($tags as $tag)
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="tags[]" value="{{ $tag->id }}" id="tag_{{ $tag->id }}" {{ (is_array(old('tags')) && in_array($tag->id, old('tags'))) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="tag_{{ $tag->id }}">{{ $tag->name }}</label>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Quốc gia đến <span class="text-danger">*</span></label>
@@ -80,13 +111,11 @@
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Lương tối thiểu</label>
-                    <input type="number" name="salary_min" class="form-control" value="{{ old('salary_min') }}"
-                        min="0">
+                    <input type="number" name="salary_min" class="form-control" value="{{ old('salary_min') }}" min="0">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Lương tối đa</label>
-                    <input type="number" name="salary_max" class="form-control" value="{{ old('salary_max') }}"
-                        min="0">
+                    <input type="number" name="salary_max" class="form-control" value="{{ old('salary_max') }}" min="0">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Tiền tệ</label>
@@ -101,8 +130,7 @@
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Kinh nghiệm tối thiểu (năm)</label>
-                    <input type="number" name="experience_years_min" class="form-control"
-                        value="{{ old('experience_years_min') }}" min="0">
+                    <input type="number" name="experience_years_min" class="form-control" value="{{ old('experience_years_min') }}" min="0">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Tuổi tối thiểu</label>
@@ -131,19 +159,16 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Ngày xuất bản</label>
-                    <input type="text" name="published_at" class="form-control datepicker"
-                        value="{{ old('published_at') }}" placeholder="Chọn ngày">
+                    <input type="text" name="published_at" class="form-control datepicker" value="{{ old('published_at') }}" placeholder="Chọn ngày">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Ngày hết hạn</label>
-                    <input type="text" name="expired_at" class="form-control datepicker"
-                        value="{{ old('expired_at') }}" placeholder="Chọn ngày">
+                    <input type="text" name="expired_at" class="form-control datepicker" value="{{ old('expired_at') }}" placeholder="Chọn ngày">
                 </div>
             </div>
 
             <div class="mb-3 form-check">
-                <input type="checkbox" name="is_featured" class="form-check-input" id="is_featured" value="1"
-                    {{ old('is_featured') ? 'checked' : '' }}>
+                <input type="checkbox" name="is_featured" class="form-check-input" id="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}>
                 <label class="form-check-label" for="is_featured">Tin nổi bật</label>
             </div>
 
@@ -167,7 +192,6 @@
         </form>
     </div>
 
-    <!-- Scripts cho Thư viện -->
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
@@ -176,7 +200,6 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 1. Khởi tạo Tom Select
             document.querySelectorAll('.tom-select').forEach((el) => {
                 new TomSelect(el, {
                     create: false,
@@ -184,56 +207,15 @@
                 });
             });
 
-            // 2. Khởi tạo Flatpickr định dạng ngày chuẩn
             flatpickr(".datepicker", {
                 dateFormat: "Y-m-d",
                 locale: "vn",
                 allowInput: true
             });
 
-            // 3. Khởi tạo CKEditor 5
             document.querySelectorAll('.editor').forEach((editorElement) => {
-                ClassicEditor
-                    .create(editorElement)
-                    .catch(error => {
-                        console.error('Lỗi khởi tạo CKEditor:', error);
-                    });
+                ClassicEditor.create(editorElement).catch(error => { console.error(error); });
             });
         });
-    </script>
-
-    @if (session('success'))
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Toastify({
-                    text: "{{ session('success') }}",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    style: {
-                        background: "#198754"
-                    }
-                }).showToast();
-            });
-        </script>
-    @endif
-
-    @if (session('error'))
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Toastify({
-                    text: "{{ session('error') }}",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    style: {
-                        background: "#dc3545"
-                    }
-                }).showToast();
-            });
-        </script>
-    @endif
     </script>
 @endsection
