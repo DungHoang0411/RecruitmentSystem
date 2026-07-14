@@ -2,40 +2,51 @@
 
 @section('content')
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <link rel="stylesheet" href="{{ asset('css/job-index.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('css/category-index.css') }}">
+
+    <div class="hero-banner text-center">
+        <div class="container">
+            <h1 class="fw-bold mb-3">Khám phá theo lĩnh vực</h1>
+            <p class="fs-5 opacity-75 mb-4">Lựa chọn ngành nghề phù hợp với định hướng của bạn</p>
+            <ul class="nav nav-pills justify-content-center gap-2">
+                <li class="nav-item"><a class="nav-link text-white border border-light px-4" href="{{ route('job-posts.index') }}">Việc làm</a></li>
+                <li class="nav-item"><a class="nav-link active bg-white text-success fw-bold px-4" href="{{ route('categories.index') }}">Danh mục</a></li>
+                <li class="nav-item"><a class="nav-link text-white border border-light px-4" href="{{ route('companies.index') }}">Công ty</a></li>
+            </ul>
+        </div>
+    </div>
 
     <div class="container py-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-dark mb-0">Quản lý Danh Mục</h2>
-            <a href="{{ route('categories.create') }}" class="btn btn-brand px-4">+ Thêm Danh Mục</a>
+            <h4 class="fw-bold mb-0">Tất cả danh mục</h4>
+            <a href="{{ route('categories.create') }}" class="btn btn-outline-success"><i class="bi bi-plus-lg me-1"></i> Thêm Danh Mục</a>
         </div>
 
-        <div class="row g-3">
+        <div class="row g-4">
             @forelse($categories as $category)
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card border-0 shadow-sm h-100" style="border-radius: 8px;">
-                        <div class="card-body p-4 text-center position-relative">
-                            <div class="dropdown position-absolute top-0 end-0 mt-2 me-2">
-                                <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown">
-                                    <i class="bi bi-three-dots-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                                    <li><a class="dropdown-item" href="{{ route('categories.edit', $category->slug ?? $category->id) }}">Sửa</a></li>
-                                    <li>
-                                        <form action="{{ route('categories.destroy', $category->slug ?? $category->id) }}" method="POST" class="form-delete d-inline">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="dropdown-item text-danger">Xóa</button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <i class="bi bi-folder2-open fs-1 brand-text mb-2 d-block"></i>
-                            <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="text-decoration-none text-dark fw-bold fs-5 stretched-link">
-                                {{ str_ireplace('category_', '', $category->name) }}
-                            </a>
-                            <div class="text-muted small mt-2">{{ $category->job_posts_count ?? 0 }} việc làm</div>
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                    <div class="category-card">
+                        <div class="dropdown category-card__dropdown">
+                            <button class="btn btn-sm btn-light border-0 bg-transparent text-muted" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                <li><a class="dropdown-item" href="{{ route('categories.edit', $category->slug ?? $category->id) }}"><i class="bi bi-pencil text-warning me-2"></i>Sửa</a></li>
+                                <li>
+                                    <form action="{{ route('categories.destroy', $category->slug ?? $category->id) }}" method="POST" class="form-delete d-inline">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash me-2"></i>Xóa</button>
+                                    </form>
+                                </li>
+                            </ul>
                         </div>
+
+                        <div class="category-card__icon"><i class="bi bi-folder2-open"></i></div>
+                        <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="category-card__title stretched-link">
+                            {{ str_ireplace('category_', '', $category->name) }}
+                        </a>
+                        <div class="category-card__count">{{ $category->job_posts_count ?? 0 }} việc làm</div>
                     </div>
                 </div>
             @empty

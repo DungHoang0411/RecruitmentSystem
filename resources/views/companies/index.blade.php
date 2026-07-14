@@ -3,51 +3,63 @@
 @section('content')
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
+    <link rel="stylesheet" href="{{ asset('css/company-index.css') }}">
+
+    <div class="hero-banner text-center">
+        <div class="container">
+            <h1 class="fw-bold mb-3">Top Công Ty Hàng Đầu</h1>
+            <p class="fs-5 opacity-75 mb-4">Khám phá cơ hội nghề nghiệp từ các đối tác uy tín</p>
+            <ul class="nav nav-pills justify-content-center gap-2">
+                <li class="nav-item"><a class="nav-link text-white border border-light px-4" href="{{ route('job-posts.index') }}">Việc làm</a></li>
+                <li class="nav-item"><a class="nav-link text-white border border-light px-4" href="{{ route('categories.index') }}">Danh mục</a></li>
+                <li class="nav-item"><a class="nav-link active bg-white text-success fw-bold px-4" href="{{ route('companies.index') }}">Công ty</a></li>
+            </ul>
+        </div>
+    </div>
+
     <div class="container py-5">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <div>
-                <h1 class="fw-bold text-dark mb-1">Các Công Ty Hàng Đầu</h1>
-                <p class="text-muted mb-0">Khám phá cơ hội nghề nghiệp từ các đối tác uy tín</p>
-            </div>
-            <a href="{{ route('companies.create') }}" class="btn btn-success">+ Thêm Công ty</a>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Danh sách công ty</h4>
+            <a href="{{ route('companies.create') }}" class="btn btn-outline-success"><i class="bi bi-plus-lg me-1"></i> Thêm Công ty</a>
         </div>
 
         <div class="row g-4">
             @forelse($companies as $company)
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 shadow-sm border-0 company-card position-relative">
-                        <div class="position-absolute top-0 end-0 p-2 z-1">
-                            <a href="{{ route('companies.edit', $company->slug ?? $company->id) }}" class="btn btn-sm btn-light text-warning shadow-sm me-1" title="Sửa"><i class="bi bi-pencil-square"></i></a>
-                            <form action="{{ route('companies.destroy', $company->slug ?? $company->id) }}" method="POST" class="d-inline form-delete">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-light text-danger shadow-sm" title="Xóa"><i class="bi bi-trash"></i></button>
-                            </form>
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="company-card">
+                        <div class="dropdown company-card__dropdown">
+                            <button class="btn btn-sm btn-light border-0 bg-transparent text-muted" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                <li><a class="dropdown-item" href="{{ route('companies.edit', $company->slug ?? $company->id) }}"><i class="bi bi-pencil text-warning me-2"></i>Sửa</a></li>
+                                <li>
+                                    <form action="{{ route('companies.destroy', $company->slug ?? $company->id) }}" method="POST" class="form-delete d-inline">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash me-2"></i>Xóa</button>
+                                    </form>
+                                </li>
+                            </ul>
                         </div>
 
-                        <a href="{{ route('companies.show', $company->slug ?? $company->id) }}" class="text-decoration-none text-dark d-block h-100">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="bg-primary bg-opacity-10 text-primary rounded d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
-                                        <i class="bi bi-building fs-2"></i>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold mb-1">{{ str_ireplace('company_', '', $company->name) }}</h5>
-                                        <span class="badge bg-success">{{ $company->job_posts_count ?? 0 }} việc làm đang mở</span>
-                                    </div>
-                                </div>
-                                <p class="text-muted small mb-0 line-clamp-3">
-                                    {{ Str::limit($company->description ?? 'Đang cập nhật thông tin giới thiệu về công ty này.', 120) }}
-                                </p>
+                        <div class="company-card__header">
+                            <div class="company-card__logo"><i class="bi bi-building"></i></div>
+                            <div>
+                                <a href="{{ route('companies.show', $company->slug ?? $company->id) }}" class="company-card__title stretched-link">
+                                    {{ str_ireplace('company_', '', $company->name) }}
+                                </a>
+                                <span class="badge bg-light text-success border border-success border-opacity-25">{{ $company->job_posts_count ?? 0 }} việc làm</span>
                             </div>
-                        </a>
+                        </div>
+
+                        <div class="company-card__desc">
+                            {{ $company->description ?? 'Đang cập nhật thông tin giới thiệu về công ty này.' }}
+                        </div>
                     </div>
                 </div>
             @empty
                 <div class="col-12 text-center py-5">
-                    <div class="text-muted">
-                        <i class="bi bi-building-slash fs-1 d-block mb-3"></i>
-                        <h5>Chưa có dữ liệu công ty</h5>
-                    </div>
+                    <h5 class="text-muted">Chưa có dữ liệu công ty</h5>
                 </div>
             @endforelse
         </div>
@@ -56,12 +68,6 @@
             {{ $companies->links() }}
         </div>
     </div>
-
-    <style>
-        .company-card { transition: all 0.2s ease; border: 1px solid rgba(0,0,0,0.05) !important; }
-        .company-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
-        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -77,7 +83,7 @@
                         showCancelButton: true,
                         confirmButtonColor: '#dc3545',
                         cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Đồng ý, Xóa tất cả!'
+                        confirmButtonText: 'Đồng ý, Xóa!'
                     }).then((result) => { if (result.isConfirmed) form.submit(); });
                 });
             });
