@@ -1,30 +1,30 @@
 @extends('layouts.app')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/job-index.css') }}">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card shadow-sm border-0" style="border-radius: 12px;">
-                    <div class="card-header bg-white border-bottom p-4">
-                        <h4 class="mb-0 fw-bold">Chỉnh sửa Danh Mục</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        <form action="{{ route('categories.update', $category->slug ?? $category->id) }}" method="POST">
-                            @csrf @method('PUT')
-                            <div class="mb-4">
-                                <label class="form-label fw-bold">Tên Danh Mục <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control form-control-lg @error('name') is-invalid @enderror" value="{{ old('name', str_ireplace('category_', '', $category->name)) }}" required>
-                                @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-                            <div class="d-flex justify-content-end gap-2">
-                                <a href="{{ route('categories.index') }}" class="btn btn-light px-4">Hủy</a>
-                                <button type="submit" class="btn btn-brand px-4">Cập nhật</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <div class="container py-4">
+        <h2>Chỉnh Sửa Danh Mục</h2>
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-        </div>
+        @endif
+
+        <form action="{{ route('categories.update', $category->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            <div class="mb-3">
+                <label class="form-label">Tên danh mục <span class="text-danger">*</span></label>
+                <input type="text" name="name" class="form-control" value="{{ old('name', str_ireplace('category_', '', $category->name)) }}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Hủy</a>
+        </form>
     </div>
 @endsection

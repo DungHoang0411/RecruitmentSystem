@@ -22,14 +22,20 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:companies',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
-        $baseName = Str::slug($request->name, '_');
+        $cleanName = str_ireplace('company_', '', $request->name);
+        $finalName = 'company_' . ltrim($cleanName);
+        $baseName = Str::slug($cleanName, '_');
+
+        if (Company::where('name', $finalName)->exists()) {
+            return back()->withErrors(['name' => 'Tên công ty đã tồn tại.'])->withInput();
+        }
 
         Company::create([
-            'name' => $request->name,
+            'name' => $finalName,
             'slug' => 'company_' . $baseName,
             'description' => $request->description,
         ]);
@@ -37,8 +43,9 @@ class CompanyController extends Controller
         return redirect()->route('companies.index')->with('success', 'Thêm công ty thành công!');
     }
 
-    public function show(Company $company)
+    public function show($id)
     {
+        $company = Company::findOrFail($id);
         $jobPosts = $company->jobPosts()
             ->with(['category', 'tags'])
             ->latest()
@@ -47,22 +54,31 @@ class CompanyController extends Controller
         return view('companies.show', compact('company', 'jobPosts'));
     }
 
-    public function edit(Company $company)
+    public function edit($id)
     {
+        $company = Company::findOrFail($id);
         return view('companies.edit', compact('company'));
     }
 
-    public function update(Request $request, Company $company)
+    public function update(Request $request, $id)
     {
+        $company = Company::findOrFail($id);
+
         $request->validate([
-            'name' => 'required|string|max:255|unique:companies,name,' . $company->id,
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
-        $baseName = Str::slug($request->name, '_');
+        $cleanName = str_ireplace('company_', '', $request->name);
+        $finalName = 'company_' . ltrim($cleanName);
+        $baseName = Str::slug($cleanName, '_');
+
+        if (Company::where('name', $finalName)->where('id', '!=', $company->id)->exists()) {
+            return back()->withErrors(['name' => 'Tên công ty đã tồn tại.'])->withInput();
+        }
 
         $company->update([
-            'name' => $request->name,
+            'name' => $finalName,
             'slug' => 'company_' . $baseName,
             'description' => $request->description,
         ]);
@@ -70,9 +86,12 @@ class CompanyController extends Controller
         return redirect()->route('companies.index')->with('success', 'Cập nhật thông tin công ty thành công!');
     }
 
-    public function destroy(Company $company)
+    public function destroy($id)
     {
+        $company = Company::findOrFail($id);
+        $company->jobPosts()->delete();
         $company->delete();
+
         return redirect()->route('companies.index')->with('success', 'Đã xóa công ty và toàn bộ tin tuyển dụng liên quan!');
     }
 }

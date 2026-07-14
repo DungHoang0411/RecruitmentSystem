@@ -90,16 +90,21 @@ class JobPostController extends Controller
             ['title.unique' => 'Tiêu đề trùng lặp']
         );
 
+        $tags = $validated['tags'] ?? [];
+        unset($validated['tags']);
+
         $validated['slug'] = Str::slug($request->title) . '-' . uniqid();
         $validated['created_by'] = auth()->id() ?? 1;
         $validated['is_featured'] = $request->has('is_featured');
         $validated['view_count'] = 0;
         $validated['application_count'] = 0;
 
-        $jobPost = JobPost::create($validated);
+        $jobPost = new JobPost();
+        $jobPost->forceFill($validated);
+        $jobPost->save();
 
-        if ($request->has('tags')) {
-            $jobPost->tags()->attach($request->tags);
+        if (!empty($tags)) {
+            $jobPost->tags()->attach($tags);
         }
 
         return redirect()
@@ -131,16 +136,20 @@ class JobPostController extends Controller
             ['title.unique' => 'Tiêu đề trùng lặp']
         );
 
+        $tags = $validated['tags'] ?? [];
+        unset($validated['tags']);
+
         if ($request->title !== $jobPost->title) {
             $validated['slug'] = Str::slug($request->title) . '-' . uniqid();
         }
 
         $validated['is_featured'] = $request->has('is_featured');
 
-        $jobPost->update($validated);
+        $jobPost->forceFill($validated);
+        $jobPost->save();
 
         if ($request->has('tags')) {
-            $jobPost->tags()->sync($request->tags);
+            $jobPost->tags()->sync($tags);
         } else {
             $jobPost->tags()->detach();
         }
@@ -172,7 +181,6 @@ class JobPostController extends Controller
             'company_id' => 'required|exists:companies,id',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
-
             'description' => 'required|string',
             'status' => 'required|in:draft,published,closed,expired',
             'destination_country' => ['required', 'string', Rule::in(array_keys($this->getFilterData()['countries']))],

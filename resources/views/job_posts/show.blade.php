@@ -22,17 +22,17 @@
 
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>Công ty:</strong></div>
-                    <div class="col-md-9 text-primary fw-bold">{{ $jobPost->company->name ?? 'Chưa cập nhật' }}</div>
+                    <div class="col-md-9 text-primary fw-bold">{{ $jobPost->company ? str_ireplace('company_', '', $jobPost->company->name) : 'Chưa cập nhật' }}</div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>Danh mục:</strong></div>
-                    <div class="col-md-9">{{ $jobPost->category->name ?? 'Chưa phân loại' }}</div>
+                    <div class="col-md-9">{{ $jobPost->category ? str_ireplace('category_', '', $jobPost->category->name) : 'Chưa phân loại' }}</div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>Tags (Thẻ):</strong></div>
                     <div class="col-md-9">
                         @forelse($jobPost->tags as $tag)
-                            <span class="badge bg-secondary me-1">{{ $tag->name }}</span>
+                            <span class="badge bg-secondary me-1">{{ str_ireplace('tag_', '', $tag->name) }}</span>
                         @empty
                             <span class="text-muted fst-italic">Không có thẻ nào</span>
                         @endforelse
