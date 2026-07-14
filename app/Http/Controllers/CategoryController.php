@@ -25,9 +25,11 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories',
         ]);
 
+        $baseName = Str::slug($request->name, '_');
+
         Category::create([
             'name' => $request->name,
-            'slug' => Str::slug($request->name),
+            'slug' => 'category_' . $baseName,
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Thêm danh mục thành công!');
@@ -54,9 +56,11 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
         ]);
 
+        $baseName = Str::slug($request->name, '_');
+
         $category->update([
             'name' => $request->name,
-            'slug' => Str::slug($request->name),
+            'slug' => 'category_' . $baseName,
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Cập nhật danh mục thành công!');
