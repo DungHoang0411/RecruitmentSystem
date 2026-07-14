@@ -42,32 +42,44 @@
                 </div>
             </div>
 
-            <div class="row border-start border-4 border-success ps-3 mb-3 ms-1 bg-light py-2">
-                <div class="col-md-6 mb-2">
-                    <label class="form-label">Công ty <span class="text-danger">*</span></label>
-                    <select name="company_id" class="form-select tom-select" required>
-                        <option value="">-- Chọn Công ty --</option>
-                        @foreach($companies as $company)
-                            <option value="{{ $company->id }}" {{ old('company_id') == $company->id ? 'selected' : '' }}>{{ $company->name }}</option>
-                        @endforeach
-                    </select>
+            <div class="p-3 bg-light rounded border-start border-primary border-4 mb-4">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Công ty <span class="text-danger">*</span></label>
+                        <select name="company_id" class="form-select @error('company_id') is-invalid @enderror" required>
+                            <option value="">-- Chọn công ty --</option>
+                            @foreach ($companies as $company)
+                                <option value="{{ $company->id }}"
+                                    {{ old('company_id') == $company->id ? 'selected' : '' }}>
+                                    {{ str_ireplace('company_', '', $company->name) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Danh mục <span class="text-danger">*</span></label>
+                        <select name="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
+                            <option value="">-- Chọn danh mục --</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                    {{ str_ireplace('category_', '', $category->name) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label class="form-label">Danh mục <span class="text-danger">*</span></label>
-                    <select name="category_id" class="form-select tom-select" required>
-                        <option value="">-- Chọn Danh mục --</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-12 mt-2">
-                    <label class="form-label mb-2">Tags (Thẻ phân loại)</label>
+                <div>
+                    <label class="form-label fw-bold">Tags (Thẻ phân loại)</label>
                     <div class="d-flex flex-wrap gap-3">
-                        @foreach($tags as $tag)
+                        @foreach ($tags as $tag)
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="tags[]" value="{{ $tag->id }}" id="tag_{{ $tag->id }}" {{ (is_array(old('tags')) && in_array($tag->id, old('tags'))) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="tag_{{ $tag->id }}">{{ $tag->name }}</label>
+                                <input class="form-check-input" type="checkbox" name="tags[]" value="{{ $tag->id }}"
+                                    id="tag_{{ $tag->id }}"
+                                    {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="tag_{{ $tag->id }}">
+                                    {{ str_ireplace('tag_', '', $tag->name) }}
+                                </label>
                             </div>
                         @endforeach
                     </div>
@@ -111,15 +123,18 @@
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Lương tối thiểu</label>
-                    <input type="number" name="salary_min" class="form-control" value="{{ old('salary_min') }}" min="0">
+                    <input type="number" name="salary_min" class="form-control" value="{{ old('salary_min') }}"
+                        min="0">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Lương tối đa</label>
-                    <input type="number" name="salary_max" class="form-control" value="{{ old('salary_max') }}" min="0">
+                    <input type="number" name="salary_max" class="form-control" value="{{ old('salary_max') }}"
+                        min="0">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Tiền tệ</label>
-                    <input type="text" name="salary_currency" class="form-control" value="{{ old('salary_currency') }}">
+                    <input type="text" name="salary_currency" class="form-control"
+                        value="{{ old('salary_currency') }}">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Chu kỳ lương</label>
@@ -130,11 +145,13 @@
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Kinh nghiệm tối thiểu (năm)</label>
-                    <input type="number" name="experience_years_min" class="form-control" value="{{ old('experience_years_min') }}" min="0">
+                    <input type="number" name="experience_years_min" class="form-control"
+                        value="{{ old('experience_years_min') }}" min="0">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Tuổi tối thiểu</label>
-                    <input type="number" name="age_min" class="form-control" value="{{ old('age_min') }}" min="18">
+                    <input type="number" name="age_min" class="form-control" value="{{ old('age_min') }}"
+                        min="18">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Tuổi tối đa</label>
@@ -159,16 +176,19 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Ngày xuất bản</label>
-                    <input type="text" name="published_at" class="form-control datepicker" value="{{ old('published_at') }}" placeholder="Chọn ngày">
+                    <input type="text" name="published_at" class="form-control datepicker"
+                        value="{{ old('published_at') }}" placeholder="Chọn ngày">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Ngày hết hạn</label>
-                    <input type="text" name="expired_at" class="form-control datepicker" value="{{ old('expired_at') }}" placeholder="Chọn ngày">
+                    <input type="text" name="expired_at" class="form-control datepicker"
+                        value="{{ old('expired_at') }}" placeholder="Chọn ngày">
                 </div>
             </div>
 
             <div class="mb-3 form-check">
-                <input type="checkbox" name="is_featured" class="form-check-input" id="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}>
+                <input type="checkbox" name="is_featured" class="form-check-input" id="is_featured" value="1"
+                    {{ old('is_featured') ? 'checked' : '' }}>
                 <label class="form-check-label" for="is_featured">Tin nổi bật</label>
             </div>
 
@@ -214,7 +234,9 @@
             });
 
             document.querySelectorAll('.editor').forEach((editorElement) => {
-                ClassicEditor.create(editorElement).catch(error => { console.error(error); });
+                ClassicEditor.create(editorElement).catch(error => {
+                    console.error(error);
+                });
             });
         });
     </script>

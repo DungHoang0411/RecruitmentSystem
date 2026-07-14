@@ -2,34 +2,49 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Tag;
-use App\Models\JobPost;
-use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        // 1. Tạo tài khoản Leader Admin (Đã thêm xác thực email để test luôn)
-        User::factory()->create([
-            'name' => 'Leader Admin',
-            'email' => 'leader@recruitment.com',
-            'password' => bcrypt('password'),
-            'email_verified_at' => now(),
-        ]);
+        Schema::disableForeignKeyConstraints();
+        Category::truncate();
+        Company::truncate();
+        Tag::truncate();
+        Schema::enableForeignKeyConstraints();
 
-        // 2. Tạo dữ liệu tĩnh (Danh mục, Công ty, Tag)
-        Category::factory(5)->create();
-        Company::factory(5)->create();
-        Tag::factory(10)->create();
+        $categories = ['IT Phần mềm', 'Kế toán', 'Marketing', 'Nhân sự', 'Kinh doanh', 'Thiết kế đồ họa'];
 
-        // 3. Tạo 20 JobPost và gắn Tag ngẫu nhiên
-        JobPost::factory(20)->create()->each(function ($job) {
-            $tags = Tag::inRandomOrder()->take(rand(1, 3))->pluck('id');
-            $job->tags()->attach($tags);
-        });
+        foreach ($categories as $cat) {
+            Category::create([
+                'name' => 'category_' . $cat,
+                'slug' => 'category_' . Str::slug($cat, '_')
+            ]);
+        }
+
+        $companies = ['FPT Software', 'Viettel', 'VNG Corporation', 'Shopee', 'Tiki', 'Techcombank'];
+
+        foreach ($companies as $comp) {
+            Company::create([
+                'name' => 'company_' . $comp,
+                'slug' => 'company_' . Str::slug($comp, '_'),
+                'description' => 'Môi trường làm việc chuyên nghiệp tại ' . $comp
+            ]);
+        }
+
+        $tags = ['Backend', 'Frontend', 'Tiếng Nhật', 'Tiếng Anh', 'Làm việc từ xa', 'Thực tập sinh', 'Quản lý'];
+
+        foreach ($tags as $tag) {
+            Tag::create([
+                'name' => 'tag_' . $tag,
+                'slug' => 'tag_' . Str::slug($tag, '_')
+            ]);
+        }
     }
 }

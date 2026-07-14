@@ -134,9 +134,8 @@
                         <div class="job-card__body">
                             <div class="text-muted mb-2 fw-medium">
                                 <i class="bi bi-buildings me-2"></i>
-                                {{ $item->company->name ?? 'Công ty đối tác bảo mật' }}
+                                {{ $item->company ? str_ireplace('company_', '', $item->company->name) : 'Công ty đối tác bảo mật' }}
                             </div>
-
                             <div class="job-card__tags">
                                 <span class="job-card__tag-item"><i class="bi bi-geo-alt me-1"></i>
                                     {{ $countries[$item->destination_country] ?? $item->destination_country }}</span>
