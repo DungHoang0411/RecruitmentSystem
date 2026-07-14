@@ -1,77 +1,40 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container py-4">
+    <link rel="stylesheet" href="{{ asset('css/job-index.css') }}">
+    <div class="container py-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Danh mục: <span class="text-success">{{ $category->name }}</span></h2>
-            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Quay lại danh sách</a>
-        </div>
-
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-dark text-white">
-                <h5 class="mb-0">Danh sách Tin tuyển dụng thuộc danh mục</h5>
-            </div>
-            <div class="card-body p-0">
-                @if ($jobPosts->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="text-center" style="width: 50px;">STT</th>
-                                    <th>Tiêu đề Tin tuyển dụng</th>
-                                    <th>Công ty</th>
-                                    <th>Địa điểm</th>
-                                    <th>Trạng thái</th>
-                                    <th class="text-center" style="width: 100px;">Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($jobPosts as $key => $job)
-                                    <tr>
-                                        <td class="text-center align-middle">{{ $jobPosts->firstItem() + $key }}</td>
-                                        <td class="align-middle">
-                                            <a href="{{ route('job-posts.show', $job->slug) }}"
-                                                class="text-decoration-none fw-bold text-dark">
-                                                {{ $job->title }}
-                                            </a>
-                                            @if ($job->is_featured)
-                                                <span class="badge bg-warning text-dark ms-1">Nổi bật</span>
-                                            @endif
-                                        </td>
-                                        <td class="align-middle text-primary fw-medium">
-                                            {{ $job->company->name ?? 'Chưa cập nhật' }}</td>
-                                        <td class="align-middle">{{ $job->work_location ?? 'Không xác định' }}</td>
-                                        <td class="align-middle">
-                                            <span
-                                                class="badge
-                                                @if ($job->status == 'published') bg-success
-                                                @elseif($job->status == 'draft') bg-secondary
-                                                @elseif($job->status == 'closed') bg-dark
-                                                @else bg-danger @endif">
-                                                {{ ucfirst($job->status) }}
-                                            </span>
-                                        </td>
-                                        <td class="text-center align-middle">
-                                            <a href="{{ route('job-posts.show', $job->slug) }}"
-                                                class="btn btn-sm btn-info text-white">Chi tiết</a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="d-flex justify-content-center mt-4 mb-3">
-                        {{ $jobPosts->links() }}
-                    </div>
-                @else
-                    <div class="p-5 text-center text-muted">
-                        <i class="bi bi-inbox fs-1 d-block mb-3"></i>
-                        <h5>Chưa có tin tuyển dụng nào</h5>
-                        <p>Hiện tại danh mục này chưa được gán cho bất kỳ tin tuyển dụng nào trên hệ thống.</p>
-                    </div>
-                @endif
+            <div>
+                <a href="{{ route('categories.index') }}" class="text-decoration-none text-muted mb-2 d-inline-block"><i class="bi bi-arrow-left"></i> Quay lại</a>
+                <h3 class="fw-bold text-dark mb-0">Việc làm ngành: <span class="brand-text">{{ str_ireplace('category_', '', $category->name) }}</span></h3>
             </div>
         </div>
+        <div class="row g-4 mt-2">
+            @forelse ($jobPosts as $item)
+                <div class="col-xl-6 col-lg-6 col-md-12">
+                    <div class="job-card">
+                        <div class="job-card__header">
+                            <div class="job-card__logo"><i class="bi bi-building fs-3 text-secondary"></i></div>
+                            <div class="flex-grow-1">
+                                <a href="{{ route('job-posts.show', $item->slug) }}" class="job-card__title">{{ $item->title }}</a>
+                                <div class="job-card__salary"><i class="bi bi-currency-dollar"></i>
+                                    @if ($item->salary_min || $item->salary_max) {{ $item->salary_min ? round($item->salary_min) : '0' }} - {{ $item->salary_max ? round($item->salary_max) : 'Max' }} {{ $item->salary_currency }} @else Thỏa thuận @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="job-card__body">
+                            <div class="text-muted mb-2 fw-medium"><i class="bi bi-buildings me-2"></i> {{ $item->company ? str_ireplace('company_', '', $item->company->name) : 'Bảo mật' }}</div>
+                        </div>
+                        <div class="job-card__footer">
+                            <span class="badge @if ($item->status == 'published') bg-success @elseif($item->status == 'draft') bg-secondary @elseif($item->status == 'closed') bg-dark @else bg-danger @endif">{{ ucfirst($item->status) }}</span>
+                            <a href="{{ route('job-posts.show', $item->slug) }}" class="btn btn-sm btn-brand px-3">Chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12 text-center py-5"><h5 class="text-muted">Chưa có tin tuyển dụng nào</h5></div>
+            @endforelse
+        </div>
+        <div class="d-flex justify-content-center mt-5">{{ $jobPosts->links() }}</div>
     </div>
 @endsection

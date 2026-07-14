@@ -1,35 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="{{ asset('css/job-index.css') }}">
+
     <div class="container py-5">
-        <div class="text-center mb-5">
-            <h1 class="fw-bold text-dark">Danh Mục Tuyển Dụng</h1>
-            <p class="text-muted fs-5">Khám phá hàng ngàn cơ hội việc làm hấp dẫn theo từng nhóm ngành nghề</p>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-dark mb-0">Quản lý Danh Mục</h2>
+            <a href="{{ route('categories.create') }}" class="btn btn-brand px-4">+ Thêm Danh Mục</a>
         </div>
 
-        <div class="row g-4">
+        <div class="row g-3">
             @forelse($categories as $category)
                 <div class="col-lg-3 col-md-4 col-sm-6">
-                    <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="text-decoration-none">
-                        <div class="card h-100 shadow-sm border-0 category-card">
-                            <div class="card-body text-center py-4">
-                                <div class="mb-3">
-                                    <i class="bi bi-briefcase text-success" style="font-size: 2.5rem;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3">{{ $category->name }}</h5>
-                                <span class="badge bg-light text-success border border-success rounded-pill px-3 py-2">
-                                    {{ $category->job_posts_count ?? 0 }} việc làm
-                                </span>
+                    <div class="card border-0 shadow-sm h-100" style="border-radius: 8px;">
+                        <div class="card-body p-4 text-center position-relative">
+                            <div class="dropdown position-absolute top-0 end-0 mt-2 me-2">
+                                <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="{{ route('categories.edit', $category->slug ?? $category->id) }}">Sửa</a></li>
+                                    <li>
+                                        <form action="{{ route('categories.destroy', $category->slug ?? $category->id) }}" method="POST" class="form-delete d-inline">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="dropdown-item text-danger">Xóa</button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
+
+                            <i class="bi bi-folder2-open fs-1 brand-text mb-2 d-block"></i>
+                            <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="text-decoration-none text-dark fw-bold fs-5 stretched-link">
+                                {{ str_ireplace('category_', '', $category->name) }}
+                            </a>
+                            <div class="text-muted small mt-2">{{ $category->job_posts_count ?? 0 }} việc làm</div>
                         </div>
-                    </a>
+                    </div>
                 </div>
             @empty
                 <div class="col-12 text-center py-5">
-                    <div class="text-muted">
-                        <i class="bi bi-folder-x fs-1 d-block mb-3"></i>
-                        <h5>Hệ thống đang cập nhật danh mục</h5>
-                    </div>
+                    <h5 class="text-muted">Chưa có danh mục nào</h5>
                 </div>
             @endforelse
         </div>
@@ -39,17 +50,30 @@
         </div>
     </div>
 
-    <style>
-        .category-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            cursor: pointer;
-        }
-        .category-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.1) !important;
-        }
-        .category-card:hover .bi-briefcase {
-            color: #146c43 !important; /* Đổi màu icon khi hover */
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('.form-delete').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Xóa danh mục này?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Đồng ý'
+                    }).then((result) => { if (result.isConfirmed) form.submit(); });
+                });
+            });
+        });
+    </script>
+    @if (session('success'))
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                Toastify({ text: "{{ session('success') }}", duration: 3000, style: { background: "#198754" } }).showToast();
+            });
+        </script>
+    @endif
 @endsection
