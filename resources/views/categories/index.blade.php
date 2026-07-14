@@ -8,12 +8,9 @@
             <h1 class="fw-bold mb-3">Khám phá theo lĩnh vực</h1>
             <p class="fs-5 opacity-75 mb-4">Lựa chọn ngành nghề phù hợp với định hướng của bạn</p>
             <ul class="nav nav-pills justify-content-center gap-2">
-                <li class="nav-item"><a class="nav-link text-white border border-light px-4"
-                        href="{{ route('job-posts.index') }}">Việc làm</a></li>
-                <li class="nav-item"><a class="nav-link active bg-white text-success fw-bold px-4"
-                        href="{{ route('categories.index') }}">Danh mục</a></li>
-                <li class="nav-item"><a class="nav-link text-white border border-light px-4"
-                        href="{{ route('companies.index') }}">Công ty</a></li>
+                <li class="nav-item"><a class="nav-link text-white border border-light px-4" href="{{ route('job-posts.index') }}">Việc làm</a></li>
+                <li class="nav-item"><a class="nav-link active bg-white text-success fw-bold px-4" href="{{ route('categories.index') }}">Danh mục</a></li>
+                <li class="nav-item"><a class="nav-link text-white border border-light px-4" href="{{ route('companies.index') }}">Công ty</a></li>
             </ul>
         </div>
     </div>
@@ -21,8 +18,7 @@
     <div class="container py-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold mb-0">Tất cả danh mục</h4>
-            <a href="{{ route('categories.create') }}" class="btn btn-outline-success"><i class="bi bi-plus-lg me-1"></i>
-                Thêm Danh Mục</a>
+            <a href="{{ route('categories.create') }}" class="btn btn-outline-success"><i class="bi bi-plus-lg me-1"></i> Thêm Danh Mục</a>
         </div>
 
         <div class="row g-4">
@@ -31,22 +27,17 @@
                     <div class="card h-100 d-flex flex-column border rounded shadow-sm">
                         <div class="card-body text-center d-flex flex-column">
                             <h5 class="fw-bold mb-3 mt-2">
-                                <a href="{{ route('categories.show', $category->slug ?? $category->id) }}"
-                                    class="text-decoration-none text-dark stretched-link">
+                                <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="text-decoration-none text-dark stretched-link">
                                     {{ str_ireplace('category_', '', $category->name) }}
                                 </a>
                             </h5>
-                            <span
-                                class="badge bg-light text-success border border-success border-opacity-25 mb-4 mx-auto">{{ $category->job_posts_count ?? 0 }}
-                                việc làm</span>
+                            <span class="badge bg-light text-success border border-success border-opacity-25 mb-4 mx-auto">{{ $category->job_posts_count ?? 0 }} việc làm</span>
 
                             <div class="d-flex justify-content-center gap-2 border-top pt-3 mt-auto position-relative z-3">
-                                <a href="{{ route('categories.edit', $category->slug ?? $category->id) }}"
-                                    class="btn btn-sm btn-outline-warning">
+                                <a href="{{ route('categories.edit', $category->slug ?? $category->id) }}" class="btn btn-sm btn-outline-warning">
                                     <i class="bi bi-pencil"></i> Sửa
                                 </a>
-                                <form action="{{ route('categories.destroy', $category->slug ?? $category->id) }}"
-                                    method="POST" class="form-delete m-0">
+                                <form action="{{ route('categories.destroy', $category->slug ?? $category->id) }}" method="POST" class="form-delete m-0">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -85,9 +76,7 @@
                         cancelButtonColor: '#6c757d',
                         confirmButtonText: 'Đồng ý, Xóa!',
                         cancelButtonText: 'Hủy'
-                    }).then((result) => {
-                        if (result.isConfirmed) form.submit();
-                    });
+                    }).then((result) => { if (result.isConfirmed) form.submit(); });
                 });
             });
         });
@@ -95,13 +84,7 @@
     @if (session('success'))
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                Toastify({
-                    text: "{{ session('success') }}",
-                    duration: 3000,
-                    style: {
-                        background: "#198754"
-                    }
-                }).showToast();
+                Toastify({ text: "{{ session('success') }}", duration: 3000, style: { background: "#198754" } }).showToast();
             });
         </script>
     @endif
