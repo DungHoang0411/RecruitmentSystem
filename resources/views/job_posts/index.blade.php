@@ -18,6 +18,10 @@
                         href="{{ route('categories.index') }}">Danh mục</a></li>
                 <li class="nav-item"><a class="nav-link text-white border border-light px-4"
                         href="{{ route('companies.index') }}">Công ty</a></li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('tags.*') ? 'active bg-white text-success fw-bold' : 'text-white border border-light' }} px-4"
+                        href="{{ route('tags.index') }}">Thẻ (Tags)</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -187,14 +191,14 @@
                         </div>
                     </div>
                 </div>
-                        @empty
-                            <div class="col-12 text-center py-5">
-                                <img src="https://www.topcv.vn/v4/image/empty.svg" alt="Empty"
-                                    style="width: 150px; opacity: 0.5;" class="mb-3">
-                                <h5 class="text-muted">Không tìm thấy công việc phù hợp</h5>
-                                <p class="text-muted small">Vui lòng thay đổi tiêu chí tìm kiếm hoặc xóa bộ lọc.</p>
-                                <a href="{{ route('job-posts.index') }}" class="btn btn-brand mt-2">Xóa bộ lọc</a>
-                            </div>
+            @empty
+                <div class="col-12 text-center py-5">
+                    <img src="https://www.topcv.vn/v4/image/empty.svg" alt="Empty" style="width: 150px; opacity: 0.5;"
+                        class="mb-3">
+                    <h5 class="text-muted">Không tìm thấy công việc phù hợp</h5>
+                    <p class="text-muted small">Vui lòng thay đổi tiêu chí tìm kiếm hoặc xóa bộ lọc.</p>
+                    <a href="{{ route('job-posts.index') }}" class="btn btn-brand mt-2">Xóa bộ lọc</a>
+                </div>
             @endforelse
         </div>
 
