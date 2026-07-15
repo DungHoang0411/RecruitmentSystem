@@ -157,22 +157,29 @@
                             </div>
 
                             <div class="btn-group">
-                                <a href="{{ route('job-posts.show', $item->id) }}"
+                                <a href="{{ route('job-posts.show', ['job_post' => $item->id]) }}"
                                     class="btn btn-sm btn-brand px-3">Chi tiết</a>
+
                                 <button type="button" class="btn btn-sm btn-brand dropdown-toggle dropdown-toggle-split"
                                     data-bs-toggle="dropdown" aria-expanded="false"></button>
                                 <ul class="dropdown-menu dropdown-menu-end shadow">
-                                    <li><a class="dropdown-item" href="{{ route('job-posts.edit', $item->id) }}"><i
-                                                class="bi bi-pencil text-warning me-2"></i>Sửa</a></li>
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{{ route('job-posts.edit', ['job_post' => $item->id]) }}">
+                                            <i class="bi bi-pencil text-warning me-2"></i>Sửa
+                                        </a>
+                                    </li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
                                     <li>
-                                        <form action="{{ route('job-posts.destroy', $jobPost->id) }}" method="POST"
-                                            class="form-delete-post d-inline">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="dropdown-item text-danger"><i
-                                                    class="bi bi-trash me-2"></i>Xóa</button>
+                                        <form action="{{ route('job-posts.destroy', ['job_post' => $item->id]) }}"
+                                            method="POST" class="form-delete-post d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="bi bi-trash me-2"></i>Xóa
+                                            </button>
                                         </form>
                                     </li>
                                 </ul>
@@ -180,14 +187,14 @@
                         </div>
                     </div>
                 </div>
-            @empty
-                <div class="col-12 text-center py-5">
-                    <img src="https://www.topcv.vn/v4/image/empty.svg" alt="Empty" style="width: 150px; opacity: 0.5;"
-                        class="mb-3">
-                    <h5 class="text-muted">Không tìm thấy công việc phù hợp</h5>
-                    <p class="text-muted small">Vui lòng thay đổi tiêu chí tìm kiếm hoặc xóa bộ lọc.</p>
-                    <a href="{{ route('job-posts.index') }}" class="btn btn-brand mt-2">Xóa bộ lọc</a>
-                </div>
+                        @empty
+                            <div class="col-12 text-center py-5">
+                                <img src="https://www.topcv.vn/v4/image/empty.svg" alt="Empty"
+                                    style="width: 150px; opacity: 0.5;" class="mb-3">
+                                <h5 class="text-muted">Không tìm thấy công việc phù hợp</h5>
+                                <p class="text-muted small">Vui lòng thay đổi tiêu chí tìm kiếm hoặc xóa bộ lọc.</p>
+                                <a href="{{ route('job-posts.index') }}" class="btn btn-brand mt-2">Xóa bộ lọc</a>
+                            </div>
             @endforelse
         </div>
 
