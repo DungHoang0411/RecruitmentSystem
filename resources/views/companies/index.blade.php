@@ -29,7 +29,7 @@
                         <div class="company-card__header">
                             <div class="company-card__logo"><i class="bi bi-building"></i></div>
                             <div>
-                                <a href="{{ route('companies.show', $company->slug ?? $company->id) }}" class="company-card__title stretched-link">
+                          <a href="{{ route('companies.show', $company->id) }}" class="company-card__title stretched-link">
                                     {{ str_ireplace('company_', '', $company->name) }}
                                 </a>
                                 <span class="badge bg-light text-success border border-success border-opacity-25">{{ $company->job_posts_count ?? 0 }} việc làm</span>
@@ -41,10 +41,10 @@
                         </div>
 
                         <div class="d-flex justify-content-end gap-2 border-top pt-3 mt-auto">
-                            <a href="{{ route('companies.edit', $company->slug ?? $company->id) }}" class="btn btn-sm btn-outline-warning position-relative z-3">
+                            <a href="{{ route('companies.edit', $company->id) }}" class="btn btn-sm btn-outline-warning position-relative z-3">
                                 <i class="bi bi-pencil"></i> Sửa
                             </a>
-                            <form action="{{ route('companies.destroy', $company->slug ?? $company->id) }}" method="POST" class="form-delete m-0 position-relative z-3">
+                            <form action="{{ route('companies.destroy', $company->id) }}" method="POST" class="form-delete m-0 position-relative z-3">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-outline-danger">

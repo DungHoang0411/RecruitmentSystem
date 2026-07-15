@@ -112,7 +112,7 @@
                                 <i class="bi bi-building fs-3 text-secondary"></i>
                             </div>
                             <div class="flex-grow-1">
-                                <a href="{{ route('job-posts.show', $item->slug) }}" class="job-card__title">
+                                <a href="{{ route('job-posts.show', $item->id) }}" class="job-card__title">
                                     {{ $item->title }}
                                 </a>
                                 <div class="job-card__salary">
@@ -157,18 +157,18 @@
                             </div>
 
                             <div class="btn-group">
-                                <a href="{{ route('job-posts.show', $item->slug) }}"
+                                <a href="{{ route('job-posts.show', $item->id) }}"
                                     class="btn btn-sm btn-brand px-3">Chi tiết</a>
                                 <button type="button" class="btn btn-sm btn-brand dropdown-toggle dropdown-toggle-split"
                                     data-bs-toggle="dropdown" aria-expanded="false"></button>
                                 <ul class="dropdown-menu dropdown-menu-end shadow">
-                                    <li><a class="dropdown-item" href="{{ route('job-posts.edit', $item->slug) }}"><i
+                                    <li><a class="dropdown-item" href="{{ route('job-posts.edit', $item->id) }}"><i
                                                 class="bi bi-pencil text-warning me-2"></i>Sửa</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
                                     <li>
-                                        <form action="{{ route('job-posts.destroy', $item->slug) }}" method="POST"
+                                        <form action="{{ route('job-posts.destroy', $jobPost->id) }}" method="POST"
                                             class="form-delete-post d-inline">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="dropdown-item text-danger"><i

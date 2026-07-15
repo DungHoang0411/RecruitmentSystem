@@ -27,17 +27,17 @@
                     <div class="card h-100 d-flex flex-column border rounded shadow-sm">
                         <div class="card-body text-center d-flex flex-column">
                             <h5 class="fw-bold mb-3 mt-2">
-                                <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="text-decoration-none text-dark stretched-link">
+                              <a href="{{ route('categories.show', $category->id) }}" class="text-decoration-none text-dark stretched-link">
                                     {{ str_ireplace('category_', '', $category->name) }}
                                 </a>
                             </h5>
                             <span class="badge bg-light text-success border border-success border-opacity-25 mb-4 mx-auto">{{ $category->job_posts_count ?? 0 }} việc làm</span>
 
                             <div class="d-flex justify-content-center gap-2 border-top pt-3 mt-auto position-relative z-3">
-                                <a href="{{ route('categories.edit', $category->slug ?? $category->id) }}" class="btn btn-sm btn-outline-warning">
+                                <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-outline-warning">
                                     <i class="bi bi-pencil"></i> Sửa
                                 </a>
-                                <form action="{{ route('categories.destroy', $category->slug ?? $category->id) }}" method="POST" class="form-delete m-0">
+                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="form-delete m-0">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger">

@@ -41,9 +41,10 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Thêm danh mục thành công!');
     }
 
-    public function show($id)
+  public function show($id)
     {
         $category = Category::findOrFail($id);
+
         $jobPosts = $category->jobPosts()
             ->with(['company', 'tags'])
             ->latest()
@@ -85,6 +86,7 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $category = Category::findOrFail($id);
+
         $category->jobPosts()->delete();
         $category->delete();
 

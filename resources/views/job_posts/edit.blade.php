@@ -24,7 +24,7 @@
             </div>
         @endif
 
-        <form action="{{ route('job-posts.update', $jobPost->slug) }}" method="POST" id="jobPostForm">
+        <form action="{{ route('job-posts.update', $jobPost->id) }}" method="POST" id="jobPostForm">
             @csrf
             @method('PUT')
 
@@ -107,7 +107,8 @@
                     <select name="job_type" class="form-select tom-select" required>
                         @foreach ($job_types as $value => $label)
                             <option value="{{ $value }}"
-                                {{ old('job_type', $jobPost->job_type) == $value ? 'selected' : '' }}>{{ $label }}
+                                {{ old('job_type', $jobPost->job_type) == $value ? 'selected' : '' }}>
+                                {{ $label }}
                             </option>
                         @endforeach
                     </select>
@@ -149,7 +150,8 @@
             <div class="row">
                 <div class="col-md-3 mb-3"><label class="form-label">Kinh nghiệm tối thiểu (năm)</label><input
                         type="number" name="experience_years_min" class="form-control"
-                        value="{{ old('experience_years_min', $jobPost->experience_years_min) }}" min="0"></div>
+                        value="{{ old('experience_years_min', $jobPost->experience_years_min) }}" min="0">
+                </div>
                 <div class="col-md-3 mb-3"><label class="form-label">Tuổi tối thiểu</label><input type="number"
                         name="age_min" class="form-control" value="{{ old('age_min', $jobPost->age_min) }}"
                         min="18"></div>

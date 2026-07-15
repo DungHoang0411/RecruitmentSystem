@@ -101,6 +101,8 @@ class JobPostController extends Controller
 
         $jobPost = new JobPost();
         $jobPost->forceFill($validated);
+        $validated['published_at'] = $request->published_at ?: null;
+        $validated['expired_at'] = $request->expired_at ?: null;
         $jobPost->save();
 
         if (!empty($tags)) {
@@ -144,6 +146,9 @@ class JobPostController extends Controller
         }
 
         $validated['is_featured'] = $request->has('is_featured');
+
+        $validated['published_at'] = $request->published_at ?: null;
+        $validated['expired_at'] = $request->expired_at ?: null;
 
         $jobPost->forceFill($validated);
         $jobPost->save();

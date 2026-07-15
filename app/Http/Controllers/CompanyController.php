@@ -46,6 +46,7 @@ class CompanyController extends Controller
     public function show($id)
     {
         $company = Company::findOrFail($id);
+
         $jobPosts = $company->jobPosts()
             ->with(['category', 'tags'])
             ->latest()
@@ -89,6 +90,7 @@ class CompanyController extends Controller
     public function destroy($id)
     {
         $company = Company::findOrFail($id);
+
         $company->jobPosts()->delete();
         $company->delete();
 
