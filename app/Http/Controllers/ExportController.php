@@ -53,7 +53,7 @@ class ExportController extends Controller
         $logs = ExportLog::where('user_id', Auth::id())
             ->latest()
             ->take(10)
-            ->get(['id', 'status', 'error_message']);
+            ->get(['id', 'status','file_name', 'error_message']);
 
         return response()->json($logs);
     }

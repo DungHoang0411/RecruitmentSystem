@@ -36,7 +36,7 @@
                                         <span class="badge bg-danger">Thất bại</span>
                                     @endif
                                 </td>
-                                <td>{{ $log->file_name ?? '---' }}</td>
+                                <td class="filename-col">{{ $log->file_name ?? '---' }}</td>
                                 <td class="text-end pe-4 action-col">
                                     @if ($log->status == 'completed')
                                         <a href="{{ route('exports.download', $log->id) }}"
@@ -134,10 +134,12 @@
                                     row.setAttribute('data-status', log.status);
                                     let statusCol = row.querySelector('.status-col');
                                     let actionCol = row.querySelector('.action-col');
+                                    let filenameCol = row.querySelector('.filename-col');
 
                                     if (log.status === 'completed') {
                                         statusCol.innerHTML =
                                             '<span class="badge bg-success">Hoàn thành</span>';
+                                        filenameCol.innerHTML = log.file_name;
                                         let downloadUrl = '{{ url('/export/download') }}/' + log.id;
                                         actionCol.innerHTML =
                                             `<a href="${downloadUrl}" class="btn btn-sm btn-success btn-download"><i class="bi bi-download me-1"></i> Tải xuống</a>`;
