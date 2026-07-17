@@ -7,6 +7,7 @@ use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\ExportController;
 
 Route::get('/', function () {
     return Auth::check() ? redirect('/job-posts') : redirect('/login');
@@ -56,4 +57,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])->name('tags.edit');
     Route::put('/tags/{tag}', [TagController::class, 'update'])->name('tags.update');
     Route::delete('/tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
+
+    Route::get('/export/job-posts', [ExportController::class, 'exportJobPosts'])->name('exports.job-posts');
+    Route::get('/export/history', [ExportController::class, 'history'])->name('exports.history');
+    Route::get('/export/download/{id}', [ExportController::class, 'download'])->name('exports.download');
 });
