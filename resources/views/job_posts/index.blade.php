@@ -99,112 +99,120 @@
             </div>
         </div>
     </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">Hiển thị {{ $jobPosts->total() }} kết quả phù hợp</h4>
 
-    <div class="container pb-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold mb-0">Hiển thị {{ $jobPosts->total() }} kết quả phù hợp</h4>
-            <a href="{{ route('job-posts.create') }}" class="btn btn-outline-success"><i class="bi bi-plus-lg me-1"></i>
-                Tạo tin mới</a>
+        <div>
+            <!-- Nút Xuất Excel (Gắn request()->all() để nó tự động mang theo các bộ lọc hiện tại) -->
+            <a href="{{ route('exports.job-posts', request()->all()) }}" class="btn btn-success me-2">
+                <i class="bi bi-file-earmark-excel me-1"></i> Xuất Excel
+            </a>
+
+            <!-- Nút Tạo tin mới cũ của bạn -->
+            <a href="{{ route('job-posts.create') }}" class="btn btn-outline-success"   >
+                <i class="bi bi-plus-lg me-1"></i> Tạo tin mới
+            </a>
         </div>
+    </div>
 
-        <div class="row g-4">
-            @forelse ($jobPosts as $item)
-                <div class="col-xl-6 col-lg-6 col-md-12">
-                    <div class="job-card">
-                        <div class="job-card__header">
-                            <div class="job-card__logo">
-                                <i class="bi bi-building fs-3 text-secondary"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <a href="{{ route('job-posts.show', $item->id) }}" class="job-card__title">
-                                    {{ $item->title }}
-                                </a>
-                                <div class="job-card__salary">
-                                    <i class="bi bi-currency-dollar"></i>
-                                    @if ($item->salary_min || $item->salary_max)
-                                        {{ $item->salary_min ? round($item->salary_min) : '0' }} -
-                                        {{ $item->salary_max ? round($item->salary_max) : 'Max' }}
-                                        {{ $item->salary_currency }}
-                                    @else
-                                        Thỏa thuận
-                                    @endif
-                                    @if ($item->is_featured)
-                                        <span class="badge-hot ms-2"><i class="bi bi-fire"></i> Mới</span>
-                                    @endif
-                                </div>
-                            </div>
+    <div class="row g-4">
+        @forelse ($jobPosts as $item)
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <div class="job-card">
+                    <div class="job-card__header">
+                        <div class="job-card__logo">
+                            <i class="bi bi-building fs-3 text-secondary"></i>
                         </div>
-
-                        <div class="job-card__body">
-                            <div class="text-muted mb-2 fw-medium">
-                                <i class="bi bi-buildings me-2"></i>
-                                {{ $item->company ? str_ireplace('company_', '', $item->company->name) : 'Công ty đối tác bảo mật' }}
-                            </div>
-                            <div class="job-card__tags">
-                                <span class="job-card__tag-item"><i class="bi bi-geo-alt me-1"></i>
-                                    {{ $countries[$item->destination_country] ?? $item->destination_country }}</span>
-                                <span class="job-card__tag-item"><i class="bi bi-passport me-1"></i>
-                                    {{ $visa_types[$item->visa_type] ?? ucfirst($item->visa_type) }}</span>
-                                <span class="job-card__tag-item"><i class="bi bi-briefcase me-1"></i>
-                                    {{ $job_types[$item->job_type] ?? ucfirst($item->job_type) }}</span>
-                            </div>
-                        </div>
-
-                        <div class="job-card__footer">
-                            <div>
-                                <span
-                                    class="badge @if ($item->status == 'published') bg-success @elseif($item->status == 'draft') bg-secondary @elseif($item->status == 'closed') bg-dark @else bg-danger @endif">
-                                    {{ $statuses[$item->status] ?? ucfirst($item->status) }}
-                                </span>
-                                <small class="text-muted ms-2"><i class="bi bi-eye"></i> {{ $item->view_count }} lượt
-                                    xem</small>
-                            </div>
-
-                            <div class="btn-group">
-                                <a href="{{ route('job-posts.show', ['job_post' => $item->id]) }}"
-                                    class="btn btn-sm btn-brand px-3">Chi tiết</a>
-
-                                <button type="button" class="btn btn-sm btn-brand dropdown-toggle dropdown-toggle-split"
-                                    data-bs-toggle="dropdown" aria-expanded="false"></button>
-                                <ul class="dropdown-menu dropdown-menu-end shadow">
-                                    <li>
-                                        <a class="dropdown-item"
-                                            href="{{ route('job-posts.edit', ['job_post' => $item->id]) }}">
-                                            <i class="bi bi-pencil text-warning me-2"></i>Sửa
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li>
-                                        <form action="{{ route('job-posts.destroy', ['job_post' => $item->id]) }}"
-                                            method="POST" class="form-delete-post d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="dropdown-item text-danger">
-                                                <i class="bi bi-trash me-2"></i>Xóa
-                                            </button>
-                                        </form>
-                                    </li>
-                                </ul>
+                        <div class="flex-grow-1">
+                            <a href="{{ route('job-posts.show', $item->id) }}" class="job-card__title">
+                                {{ $item->title }}
+                            </a>
+                            <div class="job-card__salary">
+                                <i class="bi bi-currency-dollar"></i>
+                                @if ($item->salary_min || $item->salary_max)
+                                    {{ $item->salary_min ? round($item->salary_min) : '0' }} -
+                                    {{ $item->salary_max ? round($item->salary_max) : 'Max' }}
+                                    {{ $item->salary_currency }}
+                                @else
+                                    Thỏa thuận
+                                @endif
+                                @if ($item->is_featured)
+                                    <span class="badge-hot ms-2"><i class="bi bi-fire"></i> Mới</span>
+                                @endif
                             </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <div class="col-12 text-center py-5">
-                    <img src="https://www.topcv.vn/v4/image/empty.svg" alt="Empty" style="width: 150px; opacity: 0.5;"
-                        class="mb-3">
-                    <h5 class="text-muted">Không tìm thấy công việc phù hợp</h5>
-                    <p class="text-muted small">Vui lòng thay đổi tiêu chí tìm kiếm hoặc xóa bộ lọc.</p>
-                    <a href="{{ route('job-posts.index') }}" class="btn btn-brand mt-2">Xóa bộ lọc</a>
-                </div>
-            @endforelse
-        </div>
 
-        <div class="d-flex justify-content-center mt-5">
-            {{ $jobPosts->links() }}
-        </div>
+                    <div class="job-card__body">
+                        <div class="text-muted mb-2 fw-medium">
+                            <i class="bi bi-buildings me-2"></i>
+                            {{ $item->company ? str_ireplace('company_', '', $item->company->name) : 'Công ty đối tác bảo mật' }}
+                        </div>
+                        <div class="job-card__tags">
+                            <span class="job-card__tag-item"><i class="bi bi-geo-alt me-1"></i>
+                                {{ $countries[$item->destination_country] ?? $item->destination_country }}</span>
+                            <span class="job-card__tag-item"><i class="bi bi-passport me-1"></i>
+                                {{ $visa_types[$item->visa_type] ?? ucfirst($item->visa_type) }}</span>
+                            <span class="job-card__tag-item"><i class="bi bi-briefcase me-1"></i>
+                                {{ $job_types[$item->job_type] ?? ucfirst($item->job_type) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="job-card__footer">
+                        <div>
+                            <span
+                                class="badge @if ($item->status == 'published') bg-success @elseif($item->status == 'draft') bg-secondary @elseif($item->status == 'closed') bg-dark @else bg-danger @endif">
+                                {{ $statuses[$item->status] ?? ucfirst($item->status) }}
+                            </span>
+                            <small class="text-muted ms-2"><i class="bi bi-eye"></i> {{ $item->view_count }} lượt
+                                xem</small>
+                        </div>
+
+                        <div class="btn-group">
+                            <a href="{{ route('job-posts.show', ['job_post' => $item->id]) }}"
+                                class="btn btn-sm btn-brand px-3">Chi tiết</a>
+
+                            <button type="button" class="btn btn-sm btn-brand dropdown-toggle dropdown-toggle-split"
+                                data-bs-toggle="dropdown" aria-expanded="false"></button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li>
+                                    <a class="dropdown-item"
+                                        href="{{ route('job-posts.edit', ['job_post' => $item->id]) }}">
+                                        <i class="bi bi-pencil text-warning me-2"></i>Sửa
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <form action="{{ route('job-posts.destroy', ['job_post' => $item->id]) }}"
+                                        method="POST" class="form-delete-post d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="bi bi-trash me-2"></i>Xóa
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="col-12 text-center py-5">
+                <img src="https://www.topcv.vn/v4/image/empty.svg" alt="Empty" style="width: 150px; opacity: 0.5;"
+                    class="mb-3">
+                <h5 class="text-muted">Không tìm thấy công việc phù hợp</h5>
+                <p class="text-muted small">Vui lòng thay đổi tiêu chí tìm kiếm hoặc xóa bộ lọc.</p>
+                <a href="{{ route('job-posts.index') }}" class="btn btn-brand mt-2">Xóa bộ lọc</a>
+            </div>
+        @endforelse
+    </div>
+
+    <div class="d-flex justify-content-center mt-5">
+        {{ $jobPosts->links() }}
+    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>

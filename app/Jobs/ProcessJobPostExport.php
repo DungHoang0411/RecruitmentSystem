@@ -2,26 +2,53 @@
 
 namespace App\Jobs;
 
+use App\Models\ExportLog;
+use App\Exports\JobPostsExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class ProcessJobPostExport implements ShouldQueue
 {
-    use Queueable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
-    public function __construct()
+    protected $logId;
+    protected $filters;
+
+    public function __construct($logId, $filters)
     {
-        //
+        $this->logId = $logId;
+        $this->filters = $filters;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
-        //
+        $log = ExportLog::find($this->logId);
+
+        if (!$log) {
+            return;
+        }
+
+        try {
+            $log->update(['status' => 'processing']);
+
+            $fileName = 'job_posts_export_' . time() . '.xlsx';
+
+            Excel::store(new JobPostsExport($this->filters), 'exports/' . $fileName, 'public');
+
+            $log->update([
+                'status' => 'completed',
+                'file_name' => $fileName
+            ]);
+
+        } catch (\Throwable $e) {
+            $log->update([
+                'status' => 'failed',
+                'error_message' => $e->getMessage() . ' ở dòng ' . $e->getLine()
+            ]);
+        }
     }
 }

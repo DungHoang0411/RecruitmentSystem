@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('export_logs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('file_name')->nullable();
+            $table->json('filters')->nullable();
+            $table->enum('status', ['pending', 'processing', 'completed', 'failed'])->default('pending');
+            $table->text('error_message')->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */

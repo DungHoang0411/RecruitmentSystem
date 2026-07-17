@@ -61,4 +61,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/export/job-posts', [ExportController::class, 'exportJobPosts'])->name('exports.job-posts');
     Route::get('/export/history', [ExportController::class, 'history'])->name('exports.history');
     Route::get('/export/download/{id}', [ExportController::class, 'download'])->name('exports.download');
+    Route::get('/export/check-status', [ExportController::class, 'checkStatus'])->name('exports.check-status');
 });

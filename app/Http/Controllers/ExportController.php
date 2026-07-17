@@ -35,16 +35,25 @@ class ExportController extends Controller
         $log = ExportLog::where('user_id', Auth::id())->findOrFail($id);
 
         if ($log->status !== 'completed' || !$log->file_name) {
-            abort(404, 'File chưa sẵn sàng hoặc đã bị lỗi.');
+            return back()->with('error', 'File chưa sẵn sàng hoặc quá trình xuất đã bị lỗi.');
         }
 
         $filePath = 'exports/' . $log->file_name;
 
         if (!Storage::disk('public')->exists($filePath)) {
-            abort(404, 'Không tìm thấy file trên hệ thống.');
+            return back()->with('error', 'Không tìm thấy file trên hệ thống. File có thể đã bị xóa.');
         }
 
         return Storage::disk('public')->download($filePath);
     }
-}
 
+    public function checkStatus()
+    {
+        $logs = ExportLog::where('user_id', Auth::id())
+            ->latest()
+            ->take(10)
+            ->get(['id', 'status', 'error_message']);
+
+        return response()->json($logs);
+    }
+}
