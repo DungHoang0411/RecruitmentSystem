@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Str;
 
 class ProcessJobPostExport implements ShouldQueue
 {
@@ -35,9 +36,17 @@ class ProcessJobPostExport implements ShouldQueue
         try {
             $log->update(['status' => 'processing']);
 
-            $fileName = 'job_posts_export_' . time() . '.xlsx';
+            $exportClass = new JobPostsExport($this->filters);
+            $firstJob = $exportClass->query()->first();
 
-            Excel::store(new JobPostsExport($this->filters), 'exports/' . $fileName, 'public');
+            if ($firstJob) {
+                $safeTitle = Str::slug($firstJob->title);
+                $fileName = $safeTitle . '_' . time() . '.xlsx';
+            } else {
+                $fileName = 'danh_sach_tin_tuyen_dung_' . time() . '.xlsx';
+            }
+
+            Excel::store($exportClass, 'exports/' . $fileName, 'public');
 
             $log->update([
                 'status' => 'completed',

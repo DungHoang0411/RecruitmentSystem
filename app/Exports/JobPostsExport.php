@@ -26,15 +26,31 @@ class JobPostsExport implements FromQuery, WithHeadings, WithMapping
         if (!empty($this->filters['search'])) {
             $query->where('title', 'like', '%' . $this->filters['search'] . '%');
         }
+
+        if (!empty($this->filters['company_id'])) {
+            $query->where('company_id', $this->filters['company_id']);
+        }
+
+        if (!empty($this->filters['category_id'])) {
+            $query->where('category_id', $this->filters['category_id']);
+        }
+
         if (!empty($this->filters['status'])) {
             $query->where('status', $this->filters['status']);
         }
+
+        if (!empty($this->filters['created_at'])) {
+            $query->whereDate('created_at', $this->filters['created_at']);
+        }
+
         if (!empty($this->filters['destination_country'])) {
             $query->where('destination_country', $this->filters['destination_country']);
         }
+
         if (!empty($this->filters['visa_type'])) {
             $query->where('visa_type', $this->filters['visa_type']);
         }
+
         if (!empty($this->filters['job_type'])) {
             $query->where('job_type', $this->filters['job_type']);
         }
@@ -55,6 +71,10 @@ class JobPostsExport implements FromQuery, WithHeadings, WithMapping
             'Mức lương tối thiểu',
             'Mức lương tối đa',
             'Đơn vị tiền tệ',
+            'Mô tả chi tiết',
+            'Yêu cầu công việc',
+            'Quyền lợi',
+            'Địa điểm làm việc',
             'Trạng thái',
             'Ngày tạo'
         ];
@@ -73,8 +93,12 @@ class JobPostsExport implements FromQuery, WithHeadings, WithMapping
             $jobPost->salary_min,
             $jobPost->salary_max,
             $jobPost->salary_currency,
+            $jobPost->description,
+            $jobPost->requirements,
+            $jobPost->benefits,
+            $jobPost->location,
             $jobPost->status,
-            $jobPost->created_at->format('Y-m-d H:i:s'),
+            $jobPost->created_at->format('d/m/Y H:i:s'),
         ];
     }
 }

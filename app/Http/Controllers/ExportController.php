@@ -14,11 +14,12 @@ class ExportController extends Controller
     {
         $log = ExportLog::create([
             'user_id' => Auth::id(),
-            'filters' => json_encode($request->all()), // Lưu lại toàn bộ bộ lọc
+            'filters' => json_encode($request->all()),
             'status' => 'pending',
         ]);
 
         ProcessJobPostExport::dispatch($log->id, $request->all());
+        session()->put('back_to_job_posts_url', url()->previous());
         return redirect()->route('exports.history')
             ->with('success', 'Yêu cầu xuất dữ liệu đã được đưa vào hàng đợi. Hệ thống đang xử lý ngầm!');
     }
