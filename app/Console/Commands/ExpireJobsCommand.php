@@ -19,8 +19,8 @@ class ExpireJobsCommand extends Command
     {
         $now = Carbon::now();
 
-        $jobsQuery = JobPost::where('expires_at', '<', $now)
-                            ->where('status', 'active');
+        $jobsQuery = JobPost::where('expired_at', '<', $now)
+            ->where('status', '!=', 'expired');
 
         $expiredCount = $jobsQuery->count();
 
@@ -30,8 +30,9 @@ class ExpireJobsCommand extends Command
             $adminEmail = env('ADMIN_EMAIL', 'admin@example.com');
             Mail::to($adminEmail)->send(new JobsExpiredAdminNotification($expiredCount));
 
-            $this->info("Đã cập nhật {$expiredCount} tin tuyển dụng.");
-            Log::info("jobs:expire command - Đã cập nhật {$expiredCount} tin tuyển dụng.");
+            $this->info("Đã cập nhật {$expiredCount} tin tuyển dụng và gửi email báo cáo.");
+
+            Log::info("jobs:expire command - Đã cập nhật {$expiredCount} tin tuyển dụng và gửi email.");
         } else {
             $this->info('Không có tin tuyển dụng nào cần cập nhật.');
         }
