@@ -1,0 +1,86 @@
+/* =========================================
+   Biến toàn cục
+========================================= */
+:root {
+    --brand-primary: #00b14f;
+    --brand-bg: #f8f9fa;
+    --text-main: #212529;
+    --text-muted: #6c757d;
+}
+
+/* =========================================
+   Block: Hero Banner
+========================================= */
+.hero-banner {
+    background: linear-gradient(135deg, var(--brand-primary) 0%, #00602b 100%);
+    padding: 3rem 0 5rem 0;
+    color: white;
+}
+
+/* =========================================
+   Block: Company Card (Chuẩn BEM)
+========================================= */
+.company-card {
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.company-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--brand-primary);
+    box-shadow: 0 12px 24px rgba(0, 177, 79, 0.12);
+}
+.company-card__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.company-card__logo {
+    width: 64px;
+    height: 64px;
+    background: var(--brand-bg);
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+.company-card__title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.25rem;
+    position: relative;
+    z-index: 2;
+}
+.company-card__title:hover {
+    color: var(--brand-primary);
+}
+.company-card__desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+}
+.company-card__dropdown {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+}

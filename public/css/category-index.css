@@ -1,0 +1,68 @@
+/* =========================================
+   Biến toàn cục
+========================================= */
+:root {
+    --brand-primary: #00b14f;
+    --text-main: #212529;
+    --text-muted: #6c757d;
+}
+
+/* =========================================
+   Block: Hero Banner
+========================================= */
+.hero-banner {
+    background: linear-gradient(135deg, var(--brand-primary) 0%, #00602b 100%);
+    padding: 3rem 0 5rem 0;
+    color: white;
+}
+
+/* =========================================
+   Block: Category Card (Chuẩn BEM)
+========================================= */
+.category-card {
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    height: 100%;
+    position: relative;
+}
+.category-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--brand-primary);
+    box-shadow: 0 12px 24px rgba(0, 177, 79, 0.12);
+}
+.category-card__icon {
+    font-size: 3rem;
+    color: var(--brand-primary);
+    margin-bottom: 1rem;
+}
+.category-card__title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-decoration: none;
+    position: relative;
+    z-index: 2;
+}
+.category-card__title:hover {
+    color: var(--brand-primary);
+}
+.category-card__count {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    background-color: #f8f9fa;
+    border-radius: 50px;
+    display: inline-block;
+    padding: 0.25rem 1rem;
+    margin-top: 0.5rem;
+}
+.category-card__dropdown {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+}

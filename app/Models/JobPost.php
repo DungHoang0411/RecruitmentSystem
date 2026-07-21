@@ -9,6 +9,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class JobPost extends Model
 {
     use HasFactory, SoftDeletes;
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'job_post_tag');
+    }
 
     protected $fillable = [
         'title',
@@ -46,6 +60,6 @@ class JobPost extends Model
     ];
     public function getRouteKeyName()
     {
-        return 'slug';
+        return 'id';
     }
 }
