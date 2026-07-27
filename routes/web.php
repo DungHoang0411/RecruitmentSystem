@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\JobController;
 
 Route::get('/', function () {
     return Auth::check() ? redirect('/job-posts') : redirect('/login');
@@ -62,4 +63,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/export/history', [ExportController::class, 'history'])->name('exports.history');
     Route::get('/export/download/{id}', [ExportController::class, 'download'])->name('exports.download');
     Route::get('/export/check-status', [ExportController::class, 'checkStatus'])->name('exports.check-status');
+
+    Route::prefix('jobs')->name('jobs.')->group(function () {
+        Route::get('/{id}', [JobController::class, 'show'])->name('show');
+        Route::put('/{id}', [JobController::class, 'update'])->name('update');
+        Route::delete('/{id}', [JobController::class, 'destroy'])->name('destroy');
+    });
 });
