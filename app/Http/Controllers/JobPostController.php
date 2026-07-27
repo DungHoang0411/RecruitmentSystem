@@ -9,6 +9,8 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class JobPostController extends Controller
 {
@@ -114,10 +116,13 @@ class JobPostController extends Controller
             ->with('success', 'Tạo tin tuyển dụng mới thành công!');
     }
 
-    public function show(JobPost $jobPost)
+    public function show($id)
     {
-        $jobPost->increment('view_count');
-        $jobPost->load(['category', 'company', 'tags']);
+        $jobPost = Cache::remember("job:{$id}", now()->addHours(24), function () use ($id) {
+            return JobPost::with(['category', 'company', 'tags'])->findOrFail($id);
+        });
+
+        JobPost::where('id', $id)->increment('view_count');
 
         return view('job_posts.show', compact('jobPost'));
     }
@@ -133,6 +138,8 @@ class JobPostController extends Controller
 
     public function update(Request $request, JobPost $jobPost)
     {
+        // 1. Tìm bản ghi và VALIDATE dữ liệu (Ngoài transaction và khối try catch)
+
         $validated = $request->validate(
             $this->getValidationRules($jobPost->id),
             ['title.unique' => 'Tiêu đề trùng lặp']
@@ -146,31 +153,43 @@ class JobPostController extends Controller
         }
 
         $validated['is_featured'] = $request->has('is_featured');
-
         $validated['published_at'] = $request->published_at ?: null;
         $validated['expired_at'] = $request->expired_at ?: null;
 
-        $jobPost->forceFill($validated);
-        $jobPost->save();
+        // 2. Chỉ bọc thao tác lưu DB vào Transaction
+        try {
+            DB::transaction(function () use ($jobPost, $validated, $tags, $request) {
+                $jobPost->forceFill($validated);
+                $jobPost->save();
 
-        if ($request->has('tags')) {
-            $jobPost->tags()->sync($tags);
-        } else {
-            $jobPost->tags()->detach();
+                if ($request->has('tags')) {
+                    $jobPost->tags()->sync($tags);
+                } else {
+                    $jobPost->tags()->detach();
+                }
+            });
+
+            return redirect()
+                ->route('job-posts.index')
+                ->with('success', 'Cập nhật tin tuyển dụng thành công!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Lỗi hệ thống: ' . $e->getMessage())->withInput();
         }
-
-        return redirect()
-            ->route('job-posts.index')
-            ->with('success', 'Cập nhật tin tuyển dụng thành công!');
     }
 
-    public function destroy(JobPost $jobPost)
+    public function destroy($id)
     {
-        $jobPost->delete();
-
-        return redirect()
-            ->route('job-posts.index')
-            ->with('success', 'Xóa tin tuyển dụng thành công!');
+        try {
+            DB::transaction(function () use ($id) {
+                $jobPost = JobPost::findOrFail($id);
+                $jobPost->delete();
+            });
+            return redirect()
+                ->route('job-posts.index')
+                ->with('success', 'Xóa tin tuyển dụng thành công!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Lỗi hệ thống: ' . $e->getMessage());
+        }
     }
 
     protected function getValidationRules($ignoreId = null): array
