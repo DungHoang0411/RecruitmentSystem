@@ -136,7 +136,7 @@ class JobPostController extends Controller
         return view('job_posts.edit', array_merge(compact('jobPost', 'categories', 'companies', 'tags'), $this->getFilterData()));
     }
 
-    public function update(Request $request,JobPost $jobPost)
+    public function update(Request $request, JobPost $jobPost)
     {
         // 1. Tìm bản ghi và VALIDATE dữ liệu (Ngoài transaction và khối try catch)
 
@@ -158,7 +158,7 @@ class JobPostController extends Controller
 
         // 2. Chỉ bọc thao tác lưu DB vào Transaction
         try {
-             DB::transaction(function () use ($jobPost, $validated, $tags, $request) {
+            DB::transaction(function () use ($jobPost, $validated, $tags, $request) {
                 $jobPost->forceFill($validated);
                 $jobPost->save();
 
@@ -167,12 +167,11 @@ class JobPostController extends Controller
                 } else {
                     $jobPost->tags()->detach();
                 }
-             });
+            });
 
             return redirect()
                 ->route('job-posts.index')
                 ->with('success', 'Cập nhật tin tuyển dụng thành công!');
-
         } catch (\Exception $e) {
             return back()->with('error', 'Lỗi hệ thống: ' . $e->getMessage())->withInput();
         }
@@ -188,7 +187,6 @@ class JobPostController extends Controller
             return redirect()
                 ->route('job-posts.index')
                 ->with('success', 'Xóa tin tuyển dụng thành công!');
-
         } catch (\Exception $e) {
             return back()->with('error', 'Lỗi hệ thống: ' . $e->getMessage());
         }
