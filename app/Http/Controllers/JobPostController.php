@@ -159,7 +159,7 @@ class JobPostController extends Controller
 
         // 2. Chỉ bọc thao tác lưu DB vào Transaction
         try {
-            DB::transaction(function () use ($jobPost, $validated, $tags, $request) {
+             DB::transaction(function () use ($jobPost, $validated, $tags, $request) {
                 $jobPost->forceFill($validated);
                 $jobPost->save();
 
@@ -168,7 +168,7 @@ class JobPostController extends Controller
                 } else {
                     $jobPost->tags()->detach();
                 }
-            });
+             });
 
             return redirect()
                 ->route('job-posts.index')
@@ -186,7 +186,6 @@ class JobPostController extends Controller
                 $jobPost = JobPost::findOrFail($id);
                 $jobPost->delete();
             });
-
             return redirect()
                 ->route('job-posts.index')
                 ->with('success', 'Xóa tin tuyển dụng thành công!');

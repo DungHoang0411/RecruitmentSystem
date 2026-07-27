@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 class JobPostObserver
 {
     public function updated(JobPost $jobPost): void
-    {
+    {    
         Cache::forget("job:{$jobPost->id}");
     }
 

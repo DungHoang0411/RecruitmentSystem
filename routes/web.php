@@ -64,9 +64,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/export/download/{id}', [ExportController::class, 'download'])->name('exports.download');
     Route::get('/export/check-status', [ExportController::class, 'checkStatus'])->name('exports.check-status');
 
-    Route::prefix('jobs')->name('jobs.')->group(function () {
-        Route::get('/{id}', [JobController::class, 'show'])->name('show');
-        Route::put('/{id}', [JobController::class, 'update'])->name('update');
-        Route::delete('/{id}', [JobController::class, 'destroy'])->name('destroy');
-    });
 });
