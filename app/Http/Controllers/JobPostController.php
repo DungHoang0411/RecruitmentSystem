@@ -136,10 +136,9 @@ class JobPostController extends Controller
         return view('job_posts.edit', array_merge(compact('jobPost', 'categories', 'companies', 'tags'), $this->getFilterData()));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request,JobPost $jobPost)
     {
         // 1. Tìm bản ghi và VALIDATE dữ liệu (Ngoài transaction và khối try catch)
-        $jobPost = JobPost::findOrFail($id);
 
         $validated = $request->validate(
             $this->getValidationRules($jobPost->id),
