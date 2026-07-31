@@ -37,7 +37,7 @@
                         <div class="company-card__header">
                             <div class="company-card__logo"><i class="bi bi-building"></i></div>
                             <div>
-                                <a href="{{ route('companies.show', $company->id) }}"
+                                <a href="{{ route('companies.show', $company->slug) }}"
                                     class="company-card__title stretched-link">
                                     {{ str_ireplace('company_', '', $company->name) }}
                                 </a>
@@ -52,11 +52,11 @@
                         </div>
 
                         <div class="d-flex justify-content-end gap-2 border-top pt-3 mt-auto">
-                            <a href="{{ route('companies.edit', $company->id) }}"
+                            <a href="{{ route('companies.edit', $company->slug) }}"
                                 class="btn btn-sm btn-outline-warning position-relative z-3">
                                 <i class="bi bi-pencil"></i> Sửa
                             </a>
-                            <form action="{{ route('companies.destroy', $company->id) }}" method="POST"
+                            <form action="{{ route('companies.destroy', $company->slug) }}" method="POST"
                                 class="form-delete m-0 position-relative z-3">
                                 @csrf
                                 @method('DELETE')

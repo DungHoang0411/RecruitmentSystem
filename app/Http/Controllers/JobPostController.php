@@ -116,13 +116,13 @@ class JobPostController extends Controller
             ->with('success', 'Tạo tin tuyển dụng mới thành công!');
     }
 
-    public function show($id)
+    public function show($slug)
     {
-        $jobPost = Cache::remember("job:{$id}", now()->addHours(24), function () use ($id) {
-            return JobPost::with(['category', 'company', 'tags'])->findOrFail($id);
+        $jobPost = Cache::remember("job:{$slug}", now()->addHours(24), function () use ($slug) {
+            return JobPost::with(['category', 'company', 'tags'])->where('slug', $slug)->firstOrFail();
         });
 
-        JobPost::where('id', $id)->increment('view_count');
+        JobPost::where('slug', $slug)->increment('view_count');
 
         return view('job_posts.show', compact('jobPost'));
     }

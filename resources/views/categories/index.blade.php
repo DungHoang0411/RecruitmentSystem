@@ -35,7 +35,7 @@
                     <div class="card h-100 d-flex flex-column border rounded shadow-sm">
                         <div class="card-body text-center d-flex flex-column">
                             <h5 class="fw-bold mb-3 mt-2">
-                                <a href="{{ route('categories.show', $category->id) }}"
+                              <a href="{{ route('categories.show', $category->slug) }}"
                                     class="text-decoration-none text-dark stretched-link">
                                     {{ str_ireplace('category_', '', $category->name) }}
                                 </a>
@@ -45,11 +45,11 @@
                                 việc làm</span>
 
                             <div class="d-flex justify-content-center gap-2 border-top pt-3 mt-auto position-relative z-3">
-                                <a href="{{ route('categories.edit', $category->id) }}"
+                                <a href="{{ route('categories.edit', $category->slug) }}"
                                     class="btn btn-sm btn-outline-warning">
                                     <i class="bi bi-pencil"></i> Sửa
                                 </a>
-                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST"
+                                <form action="{{ route('categories.destroy', $category->slug) }}" method="POST"
                                     class="form-delete m-0">
                                     @csrf
                                     @method('DELETE')
