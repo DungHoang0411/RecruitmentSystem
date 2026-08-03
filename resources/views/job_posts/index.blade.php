@@ -155,12 +155,12 @@
                             </div>
 
                             <div class="btn-group">
-                                <a href="{{ route('job-posts.show', ['job_post' => $item->id]) }}" class="btn btn-sm btn-brand px-3">Chi tiết</a>
+                                <a href="{{ route('job-posts.show', ['job_post' => $item->slug]) }}" class="btn btn-sm btn-brand px-3">Chi tiết</a>
 
                                 <button type="button" class="btn btn-sm btn-brand dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false"></button>
                                 <ul class="dropdown-menu dropdown-menu-end shadow">
                                     <li>
-                                        <a class="dropdown-item" href="{{ route('job-posts.edit', ['job_post' => $item->id]) }}">
+                                        <a class="dropdown-item" href="{{ route('job-posts.edit', ['job_post' => $item->slug]) }}">
                                             <i class="bi bi-pencil text-warning me-2"></i>Sửa
                                         </a>
                                     </li>
@@ -168,7 +168,7 @@
                                         <hr class="dropdown-divider">
                                     </li>
                                     <li>
-                                        <form action="{{ route('job-posts.destroy', ['job_post' => $item->id]) }}" method="POST" class="form-delete-post d-inline">
+                                        <form action="{{ route('job-posts.destroy', ['job_post' => $item->slug]) }}" method="POST" class="form-delete-post d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="dropdown-item text-danger">
