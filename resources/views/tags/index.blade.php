@@ -37,7 +37,7 @@
                                 <a href="{{ route('tags.edit', $tag->id) }}" class="btn btn-sm btn-outline-warning w-50">
                                     <i class="bi bi-pencil me-1"></i> Sửa
                                 </a>
-                                <form action="{{ route('tags.destroy', $tag->id) }}" method="POST" class="form-delete m-0 w-50">
+                                <form action="{{ route('tags.destroy', $tag->slug) }}" method="POST" class="form-delete m-0 w-50">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger w-100">
