@@ -116,19 +116,20 @@ class JobPostController extends Controller
             ->with('success', 'Tạo tin tuyển dụng mới thành công!');
     }
 
-    public function show(JobPost $jobPost)
+    public function show($slug)
     {
-        $jobPost = Cache::remember("job:{$jobPost->slug}", now()->addHours(24), function () use ($jobPost) {
-            return $jobPost->load(['category', 'company', 'tags']);
+        $jobPost = Cache::remember("job:{$slug}", now()->addHours(24), function () use ($slug) {
+            return JobPost::with(['category', 'company', 'tags'])->where('slug', $slug)->firstOrFail();
         });
 
-        $jobPost->increment('view_count');
+        JobPost::where('slug', $slug)->increment('view_count');
 
         return view('job_posts.show', compact('jobPost'));
     }
 
-    public function edit(JobPost $jobPost)
+    public function edit($slug)
     {
+        $jobPost = JobPost::where('slug', $slug)->firstOrFail();
         $categories = Category::all();
         $companies = Company::all();
         $tags = Tag::all();
@@ -136,8 +137,10 @@ class JobPostController extends Controller
         return view('job_posts.edit', array_merge(compact('jobPost', 'categories', 'companies', 'tags'), $this->getFilterData()));
     }
 
-    public function update(Request $request, JobPost $jobPost)
+    public function update(Request $request, $slug)
     {
+        $jobPost = JobPost::where('slug', $slug)->firstOrFail();
+
         $validated = $request->validate(
             $this->getValidationRules($jobPost->id),
             ['title.unique' => 'Tiêu đề trùng lặp']
@@ -174,10 +177,11 @@ class JobPostController extends Controller
         }
     }
 
-    public function destroy(JobPost $jobPost)
+    public function destroy($slug)
     {
         try {
-            DB::transaction(function () use ($jobPost) {
+            DB::transaction(function () use ($slug) {
+                $jobPost = JobPost::where('slug', $slug)->firstOrFail();
                 $jobPost->delete();
             });
             return redirect()

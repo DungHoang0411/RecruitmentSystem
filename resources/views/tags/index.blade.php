@@ -34,7 +34,7 @@
                             </h5>
 
                             <div class="d-flex justify-content-center gap-2 mt-auto">
-                                <a href="{{ route('tags.edit', $tag->id) }}" class="btn btn-sm btn-outline-warning w-50">
+                                <a href="{{ route('tags.edit', $tag->slug) }}" class="btn btn-sm btn-outline-warning w-50">
                                     <i class="bi bi-pencil me-1"></i> Sửa
                                 </a>
                                 <form action="{{ route('tags.destroy', $tag->slug) }}" method="POST" class="form-delete m-0 w-50">

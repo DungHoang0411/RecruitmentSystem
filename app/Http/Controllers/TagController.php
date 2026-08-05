@@ -35,8 +35,10 @@ class TagController extends Controller
         return redirect()->route('tags.index')->with('success', 'Thêm thẻ thành công!');
     }
 
-    public function show(Tag $tag)
+    public function show($slug)
     {
+        $tag = Tag::where('slug', $slug)->firstOrFail();
+
         $jobPosts = $tag->jobPosts()
             ->with(['company', 'category'])
             ->latest()
@@ -45,13 +47,17 @@ class TagController extends Controller
         return view('tags.show', compact('tag', 'jobPosts'));
     }
 
-    public function edit(Tag $tag)
+    public function edit($slug)
     {
+        $tag = Tag::where('slug', $slug)->firstOrFail();
+
         return view('tags.edit', compact('tag'));
     }
 
-    public function update(Request $request, Tag $tag)
+    public function update(Request $request, $slug)
     {
+        $tag = Tag::where('slug', $slug)->firstOrFail();
+
         $request->validate([
             'name' => 'required|string|max:255|unique:tags,name,' . $tag->id,
         ]);
@@ -66,8 +72,9 @@ class TagController extends Controller
         return redirect()->route('tags.index')->with('success', 'Cập nhật thẻ thành công!');
     }
 
-    public function destroy(Tag $tag)
+    public function destroy($slug)
     {
+        $tag = Tag::where('slug', $slug)->firstOrFail();
         $tag->delete();
 
         return redirect()->route('tags.index')->with('success', 'Xóa thẻ thành công!');

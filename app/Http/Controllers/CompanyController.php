@@ -43,8 +43,10 @@ class CompanyController extends Controller
         return redirect()->route('companies.index')->with('success', 'Thêm công ty thành công!');
     }
 
-    public function show(Company $company)
+    public function show($slug)
     {
+        $company = Company::where('slug', $slug)->firstOrFail();
+
         $jobPosts = $company->jobPosts()
             ->with(['category', 'tags'])
             ->latest()
@@ -53,13 +55,17 @@ class CompanyController extends Controller
         return view('companies.show', compact('company', 'jobPosts'));
     }
 
-    public function edit(Company $company)
+    public function edit($slug)
     {
+        $company = Company::where('slug', $slug)->firstOrFail();
+
         return view('companies.edit', compact('company'));
     }
 
-    public function update(Request $request, Company $company)
+    public function update(Request $request, $slug)
     {
+        $company = Company::where('slug', $slug)->firstOrFail();
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -82,8 +88,10 @@ class CompanyController extends Controller
         return redirect()->route('companies.index')->with('success', 'Cập nhật thông tin công ty thành công!');
     }
 
-    public function destroy(Company $company)
+    public function destroy($slug)
     {
+        $company = Company::where('slug', $slug)->firstOrFail();
+
         $company->jobPosts()->delete();
         $company->delete();
 

@@ -19,7 +19,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('tags.update', $tag->id) }}" method="POST">
+                    <form action="{{ route('tags.update', $tag->slug) }}" method="POST">
                         @csrf
                         @method('PUT')
 
