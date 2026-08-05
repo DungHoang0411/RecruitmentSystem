@@ -41,10 +41,8 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Thêm danh mục thành công!');
     }
 
-  public function show($slug)
+    public function show(Category $category)
     {
-        $category = Category::where('slug', $slug)->firstOrFail();
-
         $jobPosts = $category->jobPosts()
             ->with(['company', 'tags'])
             ->latest()
@@ -53,16 +51,13 @@ class CategoryController extends Controller
         return view('categories.show', compact('category', 'jobPosts'));
     }
 
-    public function edit($slug)
+    public function edit(Category $category)
     {
-        $category = Category::where('slug', $slug)->firstOrFail();
         return view('categories.edit', compact('category'));
     }
 
-    public function update(Request $request, $slug)
+    public function update(Request $request, Category $category)
     {
-        $category = Category::where('slug', $slug)->firstOrFail();
-
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -83,10 +78,8 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Cập nhật danh mục thành công!');
     }
 
-    public function destroy($slug)
+    public function destroy(Category $category)
     {
-        $category = Category::where('slug', $slug)->firstOrFail();
-
         $category->jobPosts()->delete();
         $category->delete();
 

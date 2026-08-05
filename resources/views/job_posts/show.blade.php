@@ -3,7 +3,7 @@
 @section('content')
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Chi Tiết Tin Tuyển Dụng #{{ $jobPost->id }}</h2>
+            <h2>Chi Tiết Tin Tuyển Dụng </h2>
             <a href="{{ route('job-posts.index') }}" class="btn btn-secondary">Quay lại danh sách</a>
         </div>
 

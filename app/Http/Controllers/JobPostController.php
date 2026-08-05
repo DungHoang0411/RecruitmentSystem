@@ -116,13 +116,13 @@ class JobPostController extends Controller
             ->with('success', 'Tạo tin tuyển dụng mới thành công!');
     }
 
-    public function show($slug)
+    public function show(JobPost $jobPost)
     {
-        $jobPost = Cache::remember("job:{$slug}", now()->addHours(24), function () use ($slug) {
-            return JobPost::with(['category', 'company', 'tags'])->where('slug', $slug)->firstOrFail();
+        $jobPost = Cache::remember("job:{$jobPost->slug}", now()->addHours(24), function () use ($jobPost) {
+            return $jobPost->load(['category', 'company', 'tags']);
         });
 
-        JobPost::where('slug', $slug)->increment('view_count');
+        $jobPost->increment('view_count');
 
         return view('job_posts.show', compact('jobPost'));
     }
@@ -138,8 +138,6 @@ class JobPostController extends Controller
 
     public function update(Request $request, JobPost $jobPost)
     {
-        // 1. Tìm bản ghi và VALIDATE dữ liệu (Ngoài transaction và khối try catch)
-
         $validated = $request->validate(
             $this->getValidationRules($jobPost->id),
             ['title.unique' => 'Tiêu đề trùng lặp']
@@ -156,7 +154,6 @@ class JobPostController extends Controller
         $validated['published_at'] = $request->published_at ?: null;
         $validated['expired_at'] = $request->expired_at ?: null;
 
-        // 2. Chỉ bọc thao tác lưu DB vào Transaction
         try {
             DB::transaction(function () use ($jobPost, $validated, $tags, $request) {
                 $jobPost->forceFill($validated);
@@ -177,11 +174,10 @@ class JobPostController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(JobPost $jobPost)
     {
         try {
-            DB::transaction(function () use ($id) {
-                $jobPost = JobPost::findOrFail($id);
+            DB::transaction(function () use ($jobPost) {
                 $jobPost->delete();
             });
             return redirect()
